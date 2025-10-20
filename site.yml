@@ -1,0 +1,21 @@
+site:
+  title: Platform Foundation Bootcamp - RHOAI 
+  url: https://redhat-ai-services.github.io/rhoai-platform-foundation-bootcamp-instructions/
+  start_page: modules::01_welcome.adoc
+
+ui:
+  bundle:
+    url: ./content/docs-ui/ui-bundle.zip
+  supplemental_files: ./content/supplemental-ui
+
+content:
+  edit_url: 'https://redhat-ai-services.github.io/rhoai-platform-foundation-bootcamp-instructions/edit/main/{path}'
+  sources:
+    - url: ./
+      start_path: content
+      
+output:
+  dir: ./content/www
+
+runtime:
+  cache_dir: ./content/.cache/antora

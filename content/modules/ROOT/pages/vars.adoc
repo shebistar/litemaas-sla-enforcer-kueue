@@ -1,0 +1,6 @@
+:GIT_ID: GIT_ID
+:git_id: GIT_ID
+:quay_id: quay_id
+:quay-id: quay_id
+:your_username: your_username
+:tag: tag

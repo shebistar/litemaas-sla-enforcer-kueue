@@ -1,0 +1,70 @@
+In this section we'll explore Model as a Service as an architectural pattern that allows organizations to access pre-selected, pre-trained, or custom-trained Large Language Models (LLMs) through an API, eliminating the need for individual teams to host these models themselves.
+
+MaaS acts as a centralized, shared resource for multiple teams, much like a coffee machine in an office breakroom. This approach positions an organization as its own internal AI provider, making LLMs accessible while optimizing GPU infrastructure (as you saw in GPU as a service).
+
+First lets explore Challenges and Benefits surrounding this MaaS pattern.
+
+== Challenges of Traditional LLM Deployment
+
+Organizations face several significant challenges when deploying and managing LLMs without a MaaS approach:
+
+* *High Costs and Underutilized Resources*: Relying on external cloud providers for LLMs can be expensive, similar to giving employees Starbucks vouchers. Assigning dedicated GPU resources per team often leads to underutilized resources and higher costs, like having a private barista who is idle most of the time. Without centralized governance, LLM costs can be unpredictable, leading to duplicated efforts and overspending. Chargeback for GPU usage is also a challenge.
+* *Data Privacy and Security Risks (IP Leakage)*: Using third-party cloud models carries a risk of intellectual property (IP) leakage, as sensitive data might be stored or used by the provider. This exposes sensitive enterprise data and raises compliance concerns.
+* *Limited Control and Consistency*: External providers dictate model selection and maintenance, which may not align with organizational needs. Isolated usage by individual teams can lead to duplicated efforts and inconsistencies. Securing access to specific models is also a challenge.
+* *Scalability and Onboarding Difficulties*: Organizations struggle to provide continuous service and growth as LLM solutions scale, and onboarding new teams can be time-consuming.
+* *Complexity of Management and Expertise Gaps*: Deploying and managing LLMs at scale is a daunting task, and many organizations lack the in-house technical expertise (ML engineers, data scientists, AI researchers) required. The rapid pace of AI advancements makes it hard to keep up.
+* *Integration with Legacy Systems*: Connecting modern LLM platforms with older enterprise systems, which often have minimal customization, is a significant technical hurdle.
+* *Model Lifecycle Management*: Managing the entire lifecycle, including rigorous testing, continuous monitoring for degradation (data drift, concept drift), retraining, and ensuring reproducibility, is inherently complex. LLMs can also exhibit "silent errors" without alerting users to underlying problems.
+* *Cultural Resistance*: Integrating AI into established workflows can face significant cultural resistance, as employees may perceive a loss of control, requiring profound organizational and process re-engineering.
+
+== Benefits of Model as a Service (MaaS)
+
+MaaS offers compelling strategic and operational advantages:
+
+* *Cost Efficiency and Resource Optimization*: MaaS maximizes GPU infrastructure utilization by enabling shared access across teams, significantly reducing costs and redundant infrastructure. Resources are allocated per model, not per team, promoting efficient sharing. This alleviates the financial burden of building and maintaining models, leading to substantial cost savings (e.g., 20-30% in marketing, 30-40% in R&D) and an average ROI of 1.7x from AI implementations. Centralized infrastructure helps avoid duplicated efforts and overspending.
+* *Enhanced Data Privacy and Security*: By enabling an organization to become an internal AI provider and self-host LLMs, MaaS ensures models and sensitive data remain within organizational control, eliminating the need to share information with external providers. This safeguards intellectual property and ensures compliance with internal policies and regulations.
+* *Accelerated Time to Value and Innovation*: MaaS provides pre-built and pre-trained LLMs ready for integration, significantly speeding up time to market for AI-powered applications. It abstracts complexities, allowing development teams to focus on building innovative AI applications and solving business problems, accelerating innovation cycles.
+* *Increased Accessibility and Democratization of AI*: MaaS democratizes access to sophisticated LLMs by lowering barriers to entry, enabling businesses of all sizes to utilize advanced AI without extensive in-house infrastructure or specialized expertise. It transforms AI consumption into a utility-like service.
+* *Improved Operational Control and Standardization*: MaaS offers enhanced control over resource scaling, managing multiple model versions, and proactive detection of model drift. It provides a standardized framework for AI development and deployment, ensuring consistency and reliability across business units. This shifts IT's role to a strategic enabler, offering a shared, standardized AI utility.
+
+== Infrastructure as a Service can be costly
+
+Self-Service is good for plentiful resources & small teams…​ But:
+
+* Throwing GPUs at the problem is risky
+* Few people know how to use them correctly
+* Leads to duplication and under-utilization
+* Leads to high costs
+* Most people want an LLM endpoint, not a GPU
+
+image::100_infra_as_service.png[Infrastructure as a service] 
+
+== Model as a Service (MaaS)
+
+Offering AI models as a service to a larger audience, especially Large Language Models (LLMs), solves many of these problems:
+
+* IT serves common models centrally
+** Generative AI focus, applicable to any model
+** Centralized pool of hardware
+** Platform Engineering for AI
+** AI management (versioning, regression testing, etc)
+
+* Models available through API Gateway
+
+* Developers consume models, build AI applications
+** For end users (private assistants, etc)
+** To improve products or services through AI
+
+* Shared Resources business model keeps costs down
+
+image::100_model_as_a_service.png[Model as a service] 
+
+
+In the following sections you'll get to use a MaaS setup with Openshift AI which will give you a good overview of the solution achieving the benefits above. We'll follow these steps:
+
+* Use the published model in a chat application
+
+* Configure 3Scale API Gateway to expose a new model
+
+* Get some usage statistics from 3Scale
+

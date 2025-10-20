@@ -1,0 +1,119 @@
+# Useful tips for working with GPU environment and taking notes
+
+## ArgoCD 
+
+There is currently an issue where after a cluster shutdown your ArgoCD url stops working. The commands to help with recovery are below:
+
+[.console-input]
+```bash
+oc delete argocd --all -n openshift-gitops
+oc delete pods --all -n openshift-gitops-operator
+echo "rerun ./bootstrap.sh "
+```
+### Argo CD Out of Sync due to differences in manifests applied and operator trying to modify manifests. 
+
+Please include this annotation when you see out-of-sync error due to differences in manifests:
+
+[.console-input]
+```
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+```
+
+## Working with bastion host 
+
+### copy over your ssh-key
+
+Example:
+`ssh-copy-id -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -i /home/user/.ssh/$SSH_KEY -p $PORT lab-user@$BASTIONHOST`
+
+
+```bash
+(base) [user@localhost ai-practice]$ ssh-copy-id -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -i /home/user/.ssh/training_key -p 31177 lab-user@ssh.ocpv01.dal10.infra.demo.redhat.com
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/user/.ssh/training_key.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+lab-user@ssh.ocpv01.dal10.infra.demo.redhat.com's password:
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh -o 'StrictHostKeyChecking=no' -o 'PubkeyAuthentication=no' -p '31177' 'lab-user@ssh.ocpv01.dal10.infra.demo.redhat.com'"
+and check to make sure that only the key(s) you wanted were added.
+```
+### backing up files from bastion host
+
+This is probably not needed unless you want to collect logs for documentation or troubleshooting. 
+
+Example:
+`rsync -av -e "ssh -o StrictHostKeyChecking=no -p $PORT " lab-user@$BASTIONHOST:$DIR $LOCALDIR`
+
+```bash
+(base) [user@localhost ai-practice]$ rsync -av -e "ssh -o StrictHostKeyChecking=no -p 31177 " lab-user@ssh.ocpv01.dal10.infra.demo.redhat.com:*  backup/
+receiving incremental file list
+
+sent 367 bytes  received 29,375 bytes  19,828.00 bytes/sec
+total size is 20,003,529  speedup is 672.57
+```
+
+## tmux 
+
+### starting tmux with custom session name
+
+`tmux new-session name`
+
+### tmux pane logging 
+
+After logging into your bastion host a good way to keep notes and the history of the work you do would be to use pipepane
+
+Quick guide: Details below
+
+```bash
+tmux
+Ctrl-b
+:pipe-pane -o 'cat >>~/tmux_LOGNAME.#S:#I-#P'
+```
+
+### tmux logging useful tips from: 
+
+https://mdschreier.com/2018/03/01/tmux-logging-and-preserving-sessions/
+
+* you can have more than one tmux-session by connecting to the server via separate terminal-sessions and start tmux separately in each one. (this might not be the main idea of tmux, BUT it is possible and needs to be thought of in the following)
+* in each tmux-session you can have many windows
+* in each window you can have many panes
+* in each pane a separate terminal-session is running
+
+### pipe-pane
+
+The easiest way to get logging activated is by following command
+
+```bash
+tmux pipe-pane -o 'cat >>~/tmux_output.#S:#I-#P'
+```
+
+This would log the output of the current pane to the file mentioned.
+While you can use following substitutions to define your filename:
+
+* `#H` Hostname of local host
+* `#h` Hostname of local host without the domain name
+* `#F` Current window flag
+* `#I` Current window index
+* `#P` Current pane index
+* `#S` Session name
+* `#T` Current window title
+* `#W` Current window name
+* `\##` A literal `#` character
+
+The substitution i choose assure unique-ness on any given point in time, so  you will not overwrite your output. It does not assure uniqueness over the time, so maybe you will have output of the todays session added to a complete different session, which had the same ideas before.
+
+## Other useful commands
+
+* Convert ipython notebook to script: `jupyter nbconvert --to script config_template.ipynb`
+
+## Useful links shared during bootcamp
+
+* https://gitlab.consulting.redhat.com/ai-practice/awesome-red-hat-ai[Awesome Red Hat AI]
+* https://rh-aiservices-bu.github.io/parasol-insurance/modules/index.html[Parsol Insurance Demo]
+* https://github.com/opendatahub-io-contrib/workbench-images[Open Data Hub Workbench Images]
+* http://quay.io/modh[RH supported images] 
+* https://github.com/rh-aiservices-bu/gpu-partitioning-guide[GPU partitioning]

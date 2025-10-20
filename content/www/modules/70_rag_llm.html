@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>RAG with LLM :: Platform Foundation Bootcamp - RHOAI</title>
+    <link rel="canonical" href="https://redhat-ai-services.github.io/rhoai-platform-foundation-bootcamp-instructions/modules/70_rag_llm.html">
+    <meta name="generator" content="Antora 3.1.14">
+<link rel="stylesheet" href="../_/css/site.css"><link rel="stylesheet" href="../_/css/site-extra.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<meta name="robots" content="all">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://demo.redhat.com/images/favicon.ico" type="image/x-icon">
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar"  style="background-color: #131313 !important;">
+    <div class="navbar-brand">
+      <div style="display: flex; flex-direction:row; padding: 12px 32px; gap: 16px;">
+     </div>
+      <div class="navbar-item site-title" style="color: #fff !important;flex: 1;">Platform Foundation Bootcamp - RHOAI</div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="modules" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title" style="display: none;"><a href="index.html" class=" query-params-link">Navigation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="01_welcome.html">Welcome and Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="05_environment_provisioning.html">Environment Provisioning</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI-Accelerator</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="20_ai-accelerator_review.html">Project Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07_installation.html">Bootstrap Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="30_gitops_env_setup_dev_prod.html">Setup Dev &amp; Prod Environments</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">RHOAI Administration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="32_dashboard_configuration.html">RHOAI Dashboard Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Notebooks</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="31_custom_notebook.html">Custom Notebook</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="09_remote_connect_notebook.html">Connect to Workbench Kernel</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Train, Store (S3), Deploy</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="33_model_training_car.html">Model Training</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="34_using_s3_storage.html">Using S3 Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="36_deploy_model.html">Deploy Model</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Science Pipelines</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="40_setup_pipeline_server.html">Setup Pipeline Server</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="41_introduction_to_kfp_pipelines.html">KFP Pipelines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kfp_elyra_differences.html">Comparison between Elyra and KFP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="build_custom_runtime_image.html">Custom Runtime Image</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction_to_elyra_pipelines.html">Elyra Pipelines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="42_working_with_pipelines.html">Working with Pipelines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="43_custom_runtime_image.html">Advanced Pipeline Customization</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Distributed Training</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="50_distributed_training.html">Ray Cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Large Language Model [LLM]</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="60_llm_explore.html">Explore LLMs</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="70_rag_llm.html">RAG with LLM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="composer_ai.html">Composer AI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Monitoring Data Science Models</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="80_trustyai_overview.html">TrustyAI Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="81_llm_evaluation.html">Evaluating Large Language Models</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Disconnected Environment</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="disconnected_install.html">RHOAI on Disconnected Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">GPU as a Service</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="90_environment_provisioning.html">Provisioning a GPU Environment with NVIDIA A10G Tensor Core GPU</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="91_gpu_as_a_service_intro.html">Introduction: GPU as a Service with GPU slicing and Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="92_nvidia_gpu_operator.html">Configuring NVIDIA GPU Time-Slicing on OpenShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="93_kueue_setup.html">Red Hat build of Kueue Operator Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="94_kueue_gpu_pricing_tier.html">Implementing GPU Pricing Tiers with Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="95_kueue_fair_sharing.html">Advanced GPU Quota Management and Preemption with Kueue</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Model-as-a-Service</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="100_maas_intro.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="101_maas_bootstrap.html">Environment Bootstrap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="102_maas_as_developer.html">Using MaaS as Developer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="103_maas_as_platform_engineer.html">Configure a new model</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="104_maas_monitor.html">Monitor usage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Agentic AI with Llama Stack</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="97_agentic_ai_llama_stack_introduction.html">Introduction &amp; Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="98_agentic_ai_llama_stack_notebook_agents.html">Agentic AI Agents with Llama Stack Clients</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="99_agentic_ai_llama_stack_playground.html">Llama Stack Playground</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#99_useful_tips.adoc">Useful Tips</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#97_syncing_fork.adoc">Syncing Forked Project</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Navigation</span>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="index.html">default</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="01_welcome.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li>Large Language Model [LLM]</li>
+    <li><a href="70_rag_llm.html">RAG with LLM</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">RAG with LLM</h1>
+<div class="sect1">
+<h2 id="_what_is_retrieval_augmented_generation_rag"><a class="anchor" href="#_what_is_retrieval_augmented_generation_rag"></a>What is Retrieval-Augmented Generation (RAG)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Large Language Models (LLMs) are trained using a large world of knowledge. This knowledge is static and compressed into the Language Model. It doesn&#8217;t get updated when new information becomes available or changes. The knowledge is also general and not really specialized to a specific topic. When you ask a question to the LLM, the answer it gives you may be incorrect or you may want to know how it came up with the answer. One way we can make the LLM smarter and more accurate is by using Retrieval-Augmented Generation with the LLM.</p>
+</div>
+<div class="paragraph">
+<p>RAG augments the LLM by giving it a specialized and mutable knowledge base to use.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_retrieval_augmented_generation_vs_retraining"><a class="anchor" href="#_retrieval_augmented_generation_vs_retraining"></a>Retrieval-Augmented Generation vs Retraining</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RAG is an architectural approach that retrieves relevant information from external sources and uses it as context for the LLM to generate responses. This method is particularly useful in dynamic data environments where information is constantly changing. RAG ensures that the LLM&#8217;s responses remain up-to-date and accurate by querying external sources in real-time.</p>
+</div>
+<div class="paragraph">
+<p>Retraining LLMs involves fine-tuning a pre-trained model on a specific dataset or task to adapt it to a particular domain or application. This approach is useful when the LLM needs to develop a deep understanding of a specific domain or task.</p>
+</div>
+<div class="paragraph">
+<p>Retrieval-Augmented Generation and retraining Large Language Models are two approaches to enhance the performance of LLMs in various applications. While both methods have their strengths and weaknesses, they cater to different needs and scenarios.</p>
+</div>
+<div class="sect2">
+<h3 id="_retrieval_augmented_generation"><a class="anchor" href="#_retrieval_augmented_generation"></a>Retrieval-Augmented Generation</h3>
+<div class="paragraph">
+<p><strong>Advantages:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Agility: RAG allows for quick adaptation to changing data without the need for frequent model retraining.</p>
+</li>
+<li>
+<p>Up-to-date responses: RAG ensures that the LLM&#8217;s responses are based on the latest information available.</p>
+</li>
+<li>
+<p>Flexibility: RAG can be applied to various domains and tasks, making it a versatile approach.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Disadvantages:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Complexity: RAG requires the development of a robust retrieval system and the integration of external knowledge sources.</p>
+</li>
+<li>
+<p>Dependence on external sources: RAG&#8217;s effectiveness relies on the quality and relevance of the external knowledge sources.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_retraining_large_language_models"><a class="anchor" href="#_retraining_large_language_models"></a>Retraining Large Language Models</h3>
+<div class="paragraph">
+<p><strong>Advantages:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Domain-specific knowledge: Retraining allows the LLM to develop a deep understanding of a specific domain or task.</p>
+</li>
+<li>
+<p>Improved accuracy: Fine-tuning can lead to improved accuracy in specific tasks or domains.</p>
+</li>
+<li>
+<p>Reduced hallucinations: Retraining can help reduce hallucinations and improve the LLM&#8217;s ability to generate accurate and relevant responses.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Disadvantages:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Static data snapshots: Fine-tuned models become static data snapshots during training and may quickly become outdated in dynamic data scenarios.</p>
+</li>
+<li>
+<p>Limited recall: Fine-tuning does not guarantee recall of knowledge, making it unreliable in certain situations.
+Choosing between RAG and Retraining</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_when_deciding_between_rag_and_retraining_consider_the_following_factors"><a class="anchor" href="#_when_deciding_between_rag_and_retraining_consider_the_following_factors"></a>When deciding between RAG and retraining, consider the following factors:</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Dynamic data environment: If the data is constantly changing, RAG is a better choice.</p>
+</li>
+<li>
+<p>Domain-specific knowledge: If the LLM needs to develop a deep understanding of a specific domain or task, retraining is a better option.</p>
+</li>
+<li>
+<p>Agility and up-to-date responses: If agility and up-to-date responses are crucial, RAG is a better choice.</p>
+</li>
+<li>
+<p>Complexity and development time: If development time and complexity are concerns, retraining might be a better option.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_both_rag_and_fine_tuning_combined"><a class="anchor" href="#_both_rag_and_fine_tuning_combined"></a>Both RAG and Fine-Tuning Combined</h3>
+<div class="imageblock bordershadow">
+<div class="content">
+<img src="_images/whynotboth.gif" alt="whynotboth">
+</div>
+</div>
+<div class="paragraph">
+<p>Combining RAG and fine-tuning can be a powerful approach. By fine-tuning an LLM on a specific task or domain and then using RAG to retrieve relevant information, you can achieve the best of both worlds.</p>
+</div>
+<div class="paragraph">
+<p><strong>Advantages:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Improved performance: Combining RAG and fine-tuning can lead to improved performance on specific tasks or domains.</p>
+</li>
+<li>
+<p>Domain knowledge: Fine-tuning can help the LLM acquire domain-specific knowledge, while RAG can ensure that the responses are up-to-date and accurate.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Disadvantages:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Complexity: Combining RAG and fine-tuning can be complex and require significant resources.</p>
+</li>
+<li>
+<p>Limited scalability: Combining RAG and fine-tuning may not be scalable for large-scale applications.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_rag_with_llm_works"><a class="anchor" href="#_how_rag_with_llm_works"></a>How RAG with LLM works</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_retriever_and_knowledge_base_and_text_embeddings"><a class="anchor" href="#_retriever_and_knowledge_base_and_text_embeddings"></a>Retriever and Knowledge Base and Text Embeddings</h3>
+<div class="paragraph">
+<p>The process of getting information from the knowledge base is as such:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The user inputs a question.</p>
+</li>
+<li>
+<p>The user query gets passed to the RAG module.</p>
+</li>
+<li>
+<p>The RAG module connects to knowledge base and grabs pieces of information that are relevant to user query and creates a prompt for the LLM.</p>
+</li>
+<li>
+<p>The prompt then gets passed to the LLM.</p>
+</li>
+<li>
+<p>LLM&#8217;s answer gets passed back to the user.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In RAG, the data is stored (usually) in a vector database. The process is as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Load the documents or raw information. The documents are collected into a ready to parse format such as text. (LLMs understand text)</p>
+</li>
+<li>
+<p>Chunk or split the documents. We can&#8217;t dump all the documents to the LLM. Smaller chunks allows the LLM to consume better and relevant information.</p>
+</li>
+<li>
+<p>Take these chunks, and translate it to a vector or a set of numbers that represent the meaning of the text (text embeddings).</p>
+</li>
+<li>
+<p>Load these vectors into the vector database.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_what_are_text_embeddings"><a class="anchor" href="#_what_are_text_embeddings"></a>What are Text Embeddings?</h4>
+<div class="paragraph">
+<p>Text embeddings are vectors or arrays of numbers that represent the semantic meaning and context of words or text.</p>
+</div>
+<div class="paragraph">
+<p>Similar concepts are grouped closed together.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Plants, trees, flowers</p>
+</li>
+<li>
+<p>Baseball, basketball, pickleball</p>
+</li>
+<li>
+<p>Hamburger, hotdog, chip</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These words/concepts will be turned into a set of numbers and will be stored in the vector database. Plants, trees and flowers should be grouped closer together in the database. Each of these items is a piece of info in our knowledge base: description of a tree, description of flower, etc. When we do a text embedding-based search, the text embedding that represent closest to the query will be retrieved. It can return a group of text embeddings that relate or are similar to the query. A new prompt is then generated with the knowledge and is then sent to the LLM.</p>
+</div>
+<div class="paragraph">
+<p>Now that we understand what Retrieval-Augmented Generation is, lets deploy and run through an example.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_using_pgvector_and_llm"><a class="anchor" href="#_example_using_pgvector_and_llm"></a>Example using PGVector and LLM</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The example below is sourced from: <a href="https://github.com/rh-aiservices-bu/llm-on-openshift" class="bare">https://github.com/rh-aiservices-bu/llm-on-openshift</a>. It is slightly modified for this example and feel free to try out the other examples in the project. This example uses PGVector as the vector database and the Mistral-7B-Instruct-v0.2 model as the LLM (using GPU).</p>
+</div>
+<div class="sect2">
+<h3 id="_lets_get_started"><a class="anchor" href="#_lets_get_started"></a>Let&#8217;s get started</h3>
+<div class="paragraph">
+<p>Using the <em><strong>GPU</strong></em> cluster</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new Data Science Project named <code>rag-llm-demo</code>.</p>
+</li>
+<li>
+<p>We&#8217;ll need to use a custom workbench image for this example.
+Import this custom workbench into RHOAI and name it <code>langchain-wb</code>:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-langchain-c9s-py311_2023c_latest</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Spin up a new <em><strong>langchain-wb</strong></em> workbench in the <code>rag-llm-demo</code> project.</p>
+</li>
+<li>
+<p>Go into Openshift console and go to the <code>rag-llm-demo</code> namespace and deploy the resources below.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploy_vector_database"><a class="anchor" href="#_deploy_vector_database"></a>Deploy Vector Database</h3>
+<details>
+<summary class="title">Postgresql Secret</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: Secret
+apiVersion: v1
+metadata:
+  name: postgresql
+  namespace: rag-llm-demo
+stringData:
+  database-name: vectordb
+  database-password: vectordb
+  database-user: vectordb
+type: Opaque</code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Postgresql PVC</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgresql
+  namespace: rag-llm-demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  volumeMode: Filesystem</code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Postgresql Service</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: Service
+apiVersion: v1
+metadata:
+  name: postgresql
+  namespace: rag-llm-demo
+spec:
+  selector:
+    app: postgresql
+  ports:
+    - name: postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: 5432</code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Postgresql Deployment</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: rag-llm-demo
+spec:
+  strategy:
+    type: Recreate
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    activeDeadlineSeconds: 21600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: postgresql
+      containers:
+        - resources:
+            limits:
+              memory: 512Mi
+          readinessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: postgresql
+          livenessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+                - '--live'
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: database-user
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: database-password
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: database-name
+          securityContext:
+            capabilities: {}
+            privileged: false
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: postgresql-data
+              mountPath: /var/lib/pgsql/data
+          terminationMessagePolicy: File
+          image: 'quay.io/rh-aiservices-bu/postgresql-15-pgvector-c9s:latest'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>After applying all those files you should have a running PostgreSQL+pgvector server running, accessible at <code>postgresql.rag-llm-demo.svc.cluster.local:5432</code> with credentials <code>vectordb:vectordb</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>The PgVector extension must be manually enabled in the server. This can only be done as a Superuser (above account won&#8217;t work). The easiest way is to:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Connect to the running server Pod, either through the Terminal view in the OpenShift Console, or through the CLI with: <code>oc rsh services/postgresql</code></p>
+</li>
+<li>
+<p>Once connected, enter the following command:</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">psql -d vectordb -c "CREATE EXTENSION vector;"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(adapt the command if you changed the name of the database in the Secret).
+If the command succeeds, it will print <code>CREATE EXTENSION</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Exit the terminal</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploy_vllm_mistral_7b_instruct_v0_2"><a class="anchor" href="#_deploy_vllm_mistral_7b_instruct_v0_2"></a>Deploy vLLM Mistral-7B-Instruct-v0.2</h3>
+<details>
+<summary class="title">vLLM PVC</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vllm-models-cache
+  namespace: rag-llm-demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 40Gi</code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">vLLM Route</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: vllm
+  namespace: rag-llm-demo
+  labels:
+    app: vllm
+spec:
+  to:
+    kind: Service
+    name: vllm
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+  wildcardPolicy: None</code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">vLLM Service</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: Service
+apiVersion: v1
+metadata:
+  name: vllm
+  namespace: rag-llm-demo
+  labels:
+    app: vllm
+spec:
+  clusterIP: None
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8000
+      targetPort: http
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: vllm</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>You&#8217;ll need a <code>HUGGING_FACE_HUB_TOKEN</code> to download and use the LLM. You can get this by creating an account on <a href="https://huggingface.co/" target="_blank" rel="noopener">Hugging Face</a> and creating an access token in the <a href="https://huggingface.co/settings/tokens" class="bare">https://huggingface.co/settings/tokens</a> [Settings&gt;Access Tokens] page. Insert your token in the <code>env</code> section.</p>
+</div>
+<div class="paragraph">
+<p>Once logged in, you&#8217;ll also need to go to the <a href="https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2" target="_blank" rel="noopener">model page</a> on HuggingFace and agree to share your contact information to access the model.</p>
+</div>
+<div class="imageblock bordershadow">
+<div class="content">
+<img src="_images/huggingface_agree_and_access.png" alt="huggingface agree and access">
+</div>
+</div>
+<details>
+<summary class="title">vLLM Deployment</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: vllm
+  namespace: rag-llm-demo
+  labels:
+    app: vllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: vllm
+    spec:
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      affinity: {}
+      terminationGracePeriodSeconds: 120
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              cpu: '2'
+              memory: 8Gi
+              nvidia.com/gpu: '1'
+            requests:
+              cpu: '2'
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: server
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 8
+            periodSeconds: 100
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: HUGGING_FACE_HUB_TOKEN
+              value: 'CHANGEME'
+          args: [
+            "--model",
+            "mistralai/Mistral-7B-Instruct-v0.2",
+            "--download-dir",
+            "/models-cache",
+            "--dtype", "float16",
+            "--max-model-len", "6144" ]
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 24
+          volumeMounts:
+            - name: models-cache
+              mountPath: /models-cache
+            - name: shm
+              mountPath: /dev/shm
+          terminationMessagePolicy: File
+          image: 'quay.io/rh-aiservices-bu/vllm-openai-ubi9:0.4.2'
+      volumes:
+        - name: models-cache
+          persistentVolumeClaim:
+            claimName: vllm-models-cache
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+      dnsPolicy: ClusterFirst
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If the vllm pod is in the "Pending" state, we&#8217;ll need to free up the GPU node. In the <code>ai-example-single-model-serving</code> project, delete the <code>granite-predictor</code> pod or reduce the <code>granite-predictor-deployment</code> pod count to 0. This will free up the GPU node and allow the <code>rag-llm-demo</code> project to use it. Note: Since ArgoCD is still managing the components, ArgoCD will automatically overwrite the changes and try to bring it back up. The vllm pod should have taken over the GPU node (and will try to start) whilst the granite-predictor should now be in the "Pending" state. (They both can run at the same time, but this will speed up the deployment of the vllm pod).
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+We are greatly reducing the amount of resources the LLM uses.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_run_through_the_notebooks_to_test_the_llm_with_rag"><a class="anchor" href="#_run_through_the_notebooks_to_test_the_llm_with_rag"></a>Run through the Notebooks to test the LLM with RAG</h3>
+<div class="paragraph">
+<p>Download these 3 notebooks in your workbench:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://github.com/rh-aiservices-bu/llm-on-openshift/blob/main/examples/notebooks/langchain/Langchain-PgVector-Ingest.ipynb" target="_blank" rel="noopener">examples/notebooks/langchain/Langchain-PgVector-Ingest.ipynb</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rh-aiservices-bu/llm-on-openshift/blob/main/examples/notebooks/langchain/Langchain-PgVector-Query.ipynb" target="_blank" rel="noopener">examples/notebooks/langchain/Langchain-PgVector-Query.ipynb</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rh-aiservices-bu/llm-on-openshift/blob/main/examples/notebooks/langchain/RAG_with_sources_Langchain-vLLM-PgVector.ipynb" target="_blank" rel="noopener">examples/notebooks/langchain/RAG_with_sources_Langchain-vLLM-PgVector.ipynb</a></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>or upload the repository to the workbench:
+<code><a href="https://github.com/rh-aiservices-bu/llm-on-openshift.git" class="bare">https://github.com/rh-aiservices-bu/llm-on-openshift.git</a></code></p>
+</div>
+<div class="sect3">
+<h4 id="_creating_an_index_and_populating_it_with_documents_using_postgresqlpgvector"><a class="anchor" href="#_creating_an_index_and_populating_it_with_documents_using_postgresqlpgvector"></a>Creating an index and populating it with documents using PostgreSQL+pgvector</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the <a href="https://github.com/rh-aiservices-bu/llm-on-openshift/blob/main/examples/notebooks/langchain/Langchain-PgVector-Ingest.ipynb" target="<em>blank">examples/notebooks/langchain/Langchain-PgVector-Ingest.ipynb</a> notebook, update the _Base Parameters and PostgreSQL info</em></p>
+</li>
+</ol>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">product_version = 2.16
+CONNECTION_STRING = "postgresql+psycopg://vectordb:vectordb@postgresql.rag-llm-demo.svc.cluster.local:5432/vectordb"
+COLLECTION_NAME = f"rhoai-doc-{product_version}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run through the notebook.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<em>Create the index and ingest the documents</em> will take more than 5 minutes to complete
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_querying_a_pgvector_index"><a class="anchor" href="#_querying_a_pgvector_index"></a>Querying a PGVector index</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the <a href="https://github.com/rh-aiservices-bu/llm-on-openshift/blob/main/examples/notebooks/langchain/Langchain-PgVector-Query.ipynb" target="_blank" rel="noopener">examples/notebooks/langchain/Langchain-PgVector-Query.ipynb</a>, update the _Base Parameters and PostgreSQL info:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">CONNECTION_STRING = "postgresql+psycopg://vectordb:vectordb@postgresql.rag-llm-demo.svc.cluster.local:5432/vectordb"
+COLLECTION_NAME = "rhoai-doc-2.16"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run through the notebook</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rag_example_with_langchain_postgresqlpgvector_and_vllm"><a class="anchor" href="#_rag_example_with_langchain_postgresqlpgvector_and_vllm"></a>RAG example with Langchain, PostgreSQL+pgvector, and vLLM</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the <a href="https://github.com/rh-aiservices-bu/llm-on-openshift/blob/main/examples/notebooks/langchain/RAG_with_sources_Langchain-vLLM-PgVector.ipynb" target="_blank" rel="noopener">examples/notebooks/langchain/RAG_with_sources_Langchain-vLLM-PgVector.ipynb</a>, update the Python packages.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">!pip install -q einops==0.7.0 langchain-community sentence-transformers openai pgvector</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Update Inference Server URL and Connection String:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs"># Replace values according to your vLLM deployment
+INFERENCE_SERVER_URL = f"http://vllm.rag-llm-demo.svc.cluster.local:8000/v1"
+MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.2"
+MAX_TOKENS=1024
+TOP_P=0.95
+TEMPERATURE=0.01
+PRESENCE_PENALTY=1.03
+
+CONNECTION_STRING = "postgresql+psycopg://vectordb:vectordb@postgresql.rag-llm-demo.svc.cluster.local:5432/vectordb"
+COLLECTION_NAME = "rhoai-doc-2.16"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At the end, should have a successful RAG with LLM sample that you can query.</p>
+</div>
+<div class="imageblock bordershadow">
+<div class="content">
+<img src="_images/rag_results.png" alt="rag results">
+</div>
+</div>
+<div class="paragraph">
+<p>Run through the notebook to successfully demo an LLM with RAG using PGVector.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_bonus_deploy_chatbot_ui_thats_connected_to_the_ragllm"><a class="anchor" href="#_bonus_deploy_chatbot_ui_thats_connected_to_the_ragllm"></a>Bonus: Deploy chatbot UI that&#8217;s connected to the RAG+LLM</h4>
+<div class="paragraph">
+<p>Deploy these resources below to the <code>rag-llm-demo</code> namespace:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/rh-aiservices-bu/llm-on-openshift/tree/main/examples/ui/gradio/gradio-rag-vllm-pgvector/deployment" class="bare">https://github.com/rh-aiservices-bu/llm-on-openshift/tree/main/examples/ui/gradio/gradio-rag-vllm-pgvector/deployment</a></p>
+</div>
+<div class="paragraph">
+<p>This will deploy a Gradio UI that connects to the RAG+LLM and allows you to ask questions and get answers through a UI.</p>
+</div>
+<div class="paragraph">
+<p>Make sure to update the environment variables in the deployment.yaml file to match your Inference Server URL, Data Connection String and Database collection name.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://research.ibm.com/blog/retrieval-augmented-generation-RAG">What is retrieval-augmented generation?</a> - IBM Research Blog and Video describing the basics of RAG.</p>
+</li>
+<li>
+<p><a href="https://developers.redhat.com/articles/2025/03/10/retrieval-augmented-generation-nodejs-podman-ai-lab-react#">Retrieval-augmented generation with Node.js, Podman AI Lab &amp; React</a> - Running a RAG example on a local workstation using Podman.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a href="https://demo.redhat.com" target="_blank" class="poweredBy"><p>Powered by</p><div class="labInfo_poweredBy" style="display: block; width: 260px;"><svg class="labInfo_poweredByLogo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508.5 178.739"><g fill="#111"><path d="M316.6 63.2v-56H342a21.279 21.279 0 0 1 7.8 1.3 18.111 18.111 0 0 1 5.9 3.5 15.577 15.577 0 0 1 5 11.8 15.051 15.051 0 0 1-3.1 9.5 16.836 16.836 0 0 1-8.4 5.8l12.5 24.1h-9.3l-11.6-23H325v23Zm24.7-48.6H325v18.7h16.3q5.25 0 8.1-2.7a8.7 8.7 0 0 0 2.8-6.6 8.7 8.7 0 0 0-2.8-6.6c-1.8-1.9-4.5-2.8-8.1-2.8ZM364.1 42.8a20.674 20.674 0 0 1 1.6-8.2 20.288 20.288 0 0 1 4.3-6.7 19.92 19.92 0 0 1 6.5-4.5 19.718 19.718 0 0 1 8-1.6 18.463 18.463 0 0 1 7.8 1.6 18.677 18.677 0 0 1 6.2 4.5 20.927 20.927 0 0 1 4.1 6.8 23.2 23.2 0 0 1 1.5 8.4v2.3H372a13.822 13.822 0 0 0 4.6 8.4 13.6 13.6 0 0 0 9.1 3.3 15.553 15.553 0 0 0 5.7-1 12.858 12.858 0 0 0 4.6-2.6l5.1 5a25.983 25.983 0 0 1-7.4 4.1 24.69 24.69 0 0 1-8.4 1.3 21.306 21.306 0 0 1-8.4-1.6 22.763 22.763 0 0 1-6.8-4.4 20.788 20.788 0 0 1-4.5-6.7 23.2 23.2 0 0 1-1.5-8.4Zm20.2-14.2a11.527 11.527 0 0 0-8 3 13.046 13.046 0 0 0-4.2 7.8h24.2a13.091 13.091 0 0 0-4.2-7.8 11.106 11.106 0 0 0-7.8-3ZM443.1 63.2v-3.8a19.448 19.448 0 0 1-5.8 3.3 18.924 18.924 0 0 1-6.7 1.2 19.824 19.824 0 0 1-14.6-6.1 22.268 22.268 0 0 1-4.4-6.7 21.812 21.812 0 0 1 0-16.4A20.534 20.534 0 0 1 416 28a19.335 19.335 0 0 1 6.6-4.5 20.334 20.334 0 0 1 8.2-1.6 20.7 20.7 0 0 1 6.6 1 19.415 19.415 0 0 1 5.7 3V7.2l8-1.8v57.8Zm-25.2-20.4a13.718 13.718 0 0 0 4 10.1 13.45 13.45 0 0 0 9.8 4.1 14.956 14.956 0 0 0 6.4-1.3 15.954 15.954 0 0 0 4.9-3.6V33.6a14.988 14.988 0 0 0-4.9-3.5 15.271 15.271 0 0 0-6.4-1.3 13.423 13.423 0 0 0-9.9 4 13.806 13.806 0 0 0-3.9 10ZM478.1 63.2v-56h8.4v24h29.8v-24h8.4v56h-8.4V38.8h-29.8v24.4ZM547.2 64a16.483 16.483 0 0 1-10.8-3.5 11.037 11.037 0 0 1-4.2-8.9 10.375 10.375 0 0 1 4.7-9.2 20.76 20.76 0 0 1 11.8-3.2 27.841 27.841 0 0 1 5.8.6 27.374 27.374 0 0 1 5.3 1.6v-4.3a8.143 8.143 0 0 0-2.6-6.5 11.452 11.452 0 0 0-7.4-2.2 20.788 20.788 0 0 0-6 .9 34.616 34.616 0 0 0-6.6 2.6l-3-6a54.169 54.169 0 0 1 8.4-3.1 33.18 33.18 0 0 1 8.3-1.1c5.2 0 9.3 1.3 12.2 3.8s4.4 6.1 4.4 10.8v27h-7.8v-3.5a19.441 19.441 0 0 1-5.8 3.2 23.54 23.54 0 0 1-6.7 1Zm-7.3-12.6a5.646 5.646 0 0 0 2.6 4.8 11.193 11.193 0 0 0 6.6 1.8 16.256 16.256 0 0 0 5.9-1 14.449 14.449 0 0 0 4.9-2.9V47a19.778 19.778 0 0 0-4.8-1.8 24.933 24.933 0 0 0-5.7-.6 11.859 11.859 0 0 0-6.8 1.8 5.728 5.728 0 0 0-2.7 5ZM580.6 53.2v-24H572v-6.7h8.6V12.1l7.9-1.9v12.3h12v6.7h-12v22.1a5.94 5.94 0 0 0 1.4 4.4c.9.9 2.5 1.3 4.6 1.3a23.637 23.637 0 0 0 3-.2 10.857 10.857 0 0 0 2.8-.8v6.7a19.28 19.28 0 0 1-3.8.9 27.484 27.484 0 0 1-3.8.3c-3.9 0-7-.9-9-2.8-2-1.7-3.1-4.4-3.1-7.9Z"></path></g><path d="M127 90.2c12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4L149.8 37c-1.7-7.1-3.2-10.3-15.7-16.6-9.7-5-30.8-13.1-37.1-13.1-5.8 0-7.5 7.5-14.4 7.5-6.7 0-11.6-5.6-17.9-5.6-6 0-9.9 4.1-12.9 12.5 0 0-8.4 23.7-9.5 27.2a4.216 4.216 0 0 0-.3 1.9c0 9.2 36.3 39.4 85 39.4Zm32.5-11.4c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3C21.8 58.8 0 61.8 0 81c0 31.5 74.6 70.3 133.7 70.3 45.3 0 56.7-20.5 56.7-36.6-.1-12.8-11-27.3-30.9-35.9Z" fill="#e00"></path><path d="M159.5 78.8c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3l3.7-9.1a4.877 4.877 0 0 0-.3 2c0 9.2 36.3 39.4 85 39.4 12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4Z"></path><path d="M253.5 158.7a2.22 2.22 0 0 1-2.2-2.2V2.2a2.2 2.2 0 0 1 4.4 0v154.2a2.242 2.242 0 0 1-2.2 2.3Z" fill="#111"></path><text data-name="Demo Platform" transform="translate(1186 149)" fill="#111" font-size="82" font-family="'RedHatDisplay', 'Overpass', overpass, helvetica, arial, sans-serif" font-weight="700"><tspan x="-877.892" y="0">Demo Platform</tspan></text></svg></div></a>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

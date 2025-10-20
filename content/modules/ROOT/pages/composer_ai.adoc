@@ -1,0 +1,64 @@
+# Composer AI
+
+Composer AI enables users to create AI assistants tailored to specific business needs, leveraging technologies like LangChain, vector databases, and GraphRAG. These assistants enhance productivity by automating tasks such as summarization, data retrieval, project management, and decision support. 
+
+## Provisioning Composer AI environment
+To provision a Composer AI environment, you can use the following link: 
+https://catalog.demo.redhat.com/catalog?search=Composer+AI&item=babylon-catalog-prod%2Fsandboxes-gpte.ocp4-composer-ai.prod[Composer AI]
+
+[.bordershadow]
+image::composer_ai_catalog.png[width=35%]
+
+[.bordershadow]
+image::composer_ai_order.png[width=35%]
+
+## Create a new assistant 
+. Navigate to networking->routes and click on `chatbot-ui`
+
++
+[.bordershadow]
+image::composer_ui_route.png[width=35%]
+
++
+
+. Click on `Assistants` -> `New Assistant` and fill in the details as shown below.
+
+[console-input]
+----
+Name: recipesAssistant
+
+Display Name: Recipe Assistant
+
+Model: Default LLM Connection
+
+Prompt: I am a friendly assistant to help you find the recipes
+----
+
+Click on `Create Assistant` and wait for the assistant to be created.
+
+[.bordershadow]
+image::composer_create_assistant.png[width=35%]
+
+### Test the assistant
+. Select the `Recipes Assisstant` just created. 
++
+[.bordershadow]
+image::composer_select_assistant.png[width=35%]
+
++
+. Start a conversation with the assistant by typing a message in the chat window. The assistant will respond with a recipe based on the input.
+
++
+[.bordershadow]
+image::composer_chat.png[width=35%]
+
+## Similar applications
+Documentation Assistant for Red Hat products - https://rh-kb-chatbot-rh-kb-chatbot.apps.prod.rhoai.rh-aiservices-bu.com/Chat[Documentation Assistant]
+
+## Reference Documentation
+. https://redhat-composer-ai.github.io/documentation/[Composer AI Documentation]
+
+. https://redhat-composer-ai.github.io/documentation/demo/Run-a-Composer-AI-local-env[Composer AI Local Environment]
+
+
+
