@@ -6,7 +6,7 @@ site:
 
 content:
   sources:
-    - url: ./
+    - url: https://github.com/shebistar/litemaas-sla-enforcer-kueue/
 
 ui:
   bundle:
