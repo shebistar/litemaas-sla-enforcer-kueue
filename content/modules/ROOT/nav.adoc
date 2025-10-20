@@ -1,69 +1,7 @@
+* xref:module-01.adoc[1. RPM Native Container]
+** xref:module-01.adoc#repositories[Repositories]
+** xref:module-01.adoc#software[Software]
 
-
-* 1. xref:01_welcome.adoc[Welcome and Introduction]
-
-* 2. xref:05_environment_provisioning.adoc[Environment Provisioning]
-
-* AI-Accelerator 
-    ** 3. xref:20_ai-accelerator_review.adoc[Project Overview]
-    ** 4. xref:07_installation.adoc[Bootstrap Installation]
-    ** 5. xref:30_gitops_env_setup_dev_prod.adoc[Setup Dev & Prod Environments]
-
-* RHOAI Administration
-    ** 6. xref:32_dashboard_configuration.adoc[RHOAI Dashboard Configuration]
-
-* Notebooks
-    ** 7. xref:31_custom_notebook.adoc[Custom Notebook]
-    ** 8. xref:09_remote_connect_notebook.adoc[Connect to Workbench Kernel]
-
-* Train, Store (S3), Deploy
-    ** 9. xref:33_model_training_car.adoc[Model Training]
-    ** 10. xref:34_using_s3_storage.adoc[Using S3 Storage]
-    ** 11. xref:36_deploy_model.adoc[Deploy Model]
-
-* Data Science Pipelines
-    ** 12. xref:40_setup_pipeline_server.adoc[Setup Pipeline Server]
-    ** 13. xref:41_introduction_to_kfp_pipelines.adoc[KFP Pipelines]
-    ** 14. xref:kfp_elyra_differences.adoc[Comparison between Elyra and KFP]
-    ** 15. xref:build_custom_runtime_image.adoc[Custom Runtime Image]
-    ** 16. xref:introduction_to_elyra_pipelines.adoc[Elyra Pipelines]
-    ** 17. xref:42_working_with_pipelines.adoc[Working with Pipelines]
-    ** 18. xref:43_custom_runtime_image.adoc[Advanced Pipeline Customization]
-
-* Distributed Training
-    ** 19. xref:50_distributed_training.adoc[Ray Cluster]
-    
-* Large Language Model [LLM]
-    ** 20. xref:60_llm_explore.adoc[Explore LLMs]
-    ** 21. xref:70_rag_llm.adoc[RAG with LLM]
-    ** 22. xref:composer_ai.adoc[Composer AI]
-
-* Monitoring Data Science Models
-    ** 22. xref:80_trustyai_overview.adoc[TrustyAI Overview]
-    ** 23. xref:81_llm_evaluation.adoc[Evaluating Large Language Models]
-
-* Disconnected Environment
-    ** 24. xref:disconnected_install.adoc[RHOAI on Disconnected Environment]
-
-* GPU as a Service
-    ** 26. xref:90_environment_provisioning.adoc[Provisioning a GPU Environment with NVIDIA A10G Tensor Core GPU]
-    ** 27. xref:91_gpu_as_a_service_intro.adoc[Introduction: GPU as a Service with GPU slicing and Kueue]
-    ** 28. xref:92_nvidia_gpu_operator.adoc[Configuring NVIDIA GPU Time-Slicing on OpenShift]
-    ** 29. xref:93_kueue_setup.adoc[Red Hat build of Kueue Operator Setup]
-    ** 30. xref:94_kueue_gpu_pricing_tier.adoc[Implementing GPU Pricing Tiers with Kueue]
-    ** 31. xref:95_kueue_fair_sharing.adoc[Advanced GPU Quota Management and Preemption with Kueue]
-
-* Model-as-a-Service
-    ** 32. xref:100_maas_intro.adoc[Introduction]
-    ** 33. xref:101_maas_bootstrap.adoc[Environment Bootstrap]
-    ** 34. xref:102_maas_as_developer.adoc[Using MaaS as Developer]
-    ** 35. xref:103_maas_as_platform_engineer.adoc[Configure a new model]
-    ** 36. xref:104_maas_monitor.adoc[Monitor usage]
-
-* Agentic AI with Llama Stack
-    ** 37. xref:97_agentic_ai_llama_stack_introduction.adoc[Introduction & Setup]
-    ** 38. xref:98_agentic_ai_llama_stack_notebook_agents.adoc[Agentic AI Agents with Llama Stack Clients]
-    ** 39. xref:99_agentic_ai_llama_stack_playground.adoc[Llama Stack Playground]
-
-* 40. xref:99_useful_tips.adoc[Useful Tips]
-* 41. xref:97_syncing_fork.adoc[Syncing Forked Project]
+* xref:module-02.adoc[2. GitHub Sourced Container]
+** xref:module-02.adoc#prerequisites[Install Prerequisites]
+** xref:module-02.adoc#container[Enable Container]
