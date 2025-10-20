@@ -1,43 +1,209 @@
-= {lab_name}
+= Taming GPU Chaos: Mastering AI Quotas with Kueue
+:author: Red Hat
+:revnumber: 1.0
+:revdate: {docdate}
+:toc: left
+:toclevels: 3
+:sectnums:
 
-The `lab_name` var, known as an asciidoc attribute, above was set in `./content/antora.yml` and can be used to set the lab_name or title of your content.
-You are both free to change its value and if you prefer to use a different var name, you can change the value of `lab_name`, for example to `title` in `./content/antora.yml` and then reference it in your content as `\{title}`. +
+:description: A hands-on lab demonstrating how to enforce AI/ML SLAs using Red Hat OpenShift AI and the Kueue Operator.
+:keywords: kueue, openshift, ai, ml, gpu, quota, preemption, ray, red hat
 
-image::rhel-logo-black.jpg[rhel-logo-black,55%,55%]
+[abstract]
+This lab provides a hands-on demonstration of how to centralize, monetize, and control expensive AI compute infrastructure (like GPUs) using the Red Hat build of Kueue Operator on Red Hat OpenShift AI (RHOAI). You will simulate a Models-as-a-Service (MaaS) provider who offers different service tiers to customers, and then use Kueue's powerful preemption capabilities to enforce a Service Level Agreement (SLA) in real-time.
 
-== Variables
+== 1. Overview and Business Value
 
-Other vars can also be set there, such as `ssh_user` and `ssh_password`, and referenced inline in the lab content by using the `\{foo}` syntax.
+Organizations often struggle with fragmented AI deployments, leading to idle GPUs and soaring operational costs. A MaaS provider centralizes this infrastructure to optimize hardware utilization, but requires a strong technical mechanism to enforce control and guarantee service levels for different pricing tiers. This lab demonstrates that mechanism.
 
-This is another var, or asciidoc attribute, from `./content/antora.yml` {my_var}
+.Business Goals and Technical Solutions
+|===
+| MaaS Challenge (Business Goal) | Kueue Solution (Lab Action)
 
-== Writing your lab
+| *Monetization & SLAs:*
+Offering guaranteed vs. best-effort service levels.
+| *Pricing Tiers:*
+Define segregated `ClusterQueues` with `nominalQuota` to guarantee capacity for premium users (*Reserved Tier*).
 
-Whatever type of content you are writing we'll refer to your *content* as "your lab" in this document.
+| *SLA Enforcement & Control:*
+Guaranteeing mission-critical workloads always run.
+| *Preemption:*
+Use a high-priority job to automatically evict a running low-priority job when reserved resources are required.
 
-=== Lab structure
+| *Efficient Utilization:*
+Allowing development teams to borrow idle resources safely.
+| *Cohort Sharing:*
+Enable teams to draw from a shared resource pool for CPU/Memory when available.
+|===
 
-Wether you are writing a lab
+[Image of a cloud computing architecture diagram]
 
-* First, we will build a monolithic application already compiled as RPM packages and put it into a container. This will allow us to deploy the application, copy it between machines, and update it separately from the operating system. This process affords us a portable and easily maintained component instead of tightly coupling the application with your operating system maintenance.
+== 2. Lab Architecture
 
-* In closing we will build a second container on a different operating system version that makes an application not packaged into RPMs. This will be similar to a web application deployment, positioning the correct files at the right locations. To do this, we will pull a project from GitHub and position the component files within our container image. The purpose of this is to achieve a portable application container that can deploy on several different versions of Red Hat Enterprise Linux. This also provides the benefit of decoupling your application maintenance, which would all happen by building new containers versus operating system maintenance. The container is no longer reliant on the operating system installed on the machine where the application is deployed.
+This lab simulates a multi-tenant environment on OpenShift using several key components:
 
-. Now let's examine this cluster a bit more by describing the cluster (the `$GUID` environment variable is already set for you so you can immediately describe your individual cluster):
+* *Red Hat OpenShift AI (RHOAI):* Provides the foundational AI/ML platform and the Ray Operator for running distributed workloads.
+* *Red Hat build of Kueue Operator:* The core component for queueing, quota management, and SLA enforcement.
+* *RayCluster:* A distributed computing workload, representing a typical AI/ML job that consumes significant resources.
+
+We will configure two service tiers:
+
+1.  *Reserved Tier (`team-a`):* Represents a premium customer with a guaranteed quota for GPUs and CPU/Memory. Their workloads run at a high priority.
+2.  *On-Demand Tier (`team-b`):* Represents a standard customer that can borrow idle CPU/Memory from a shared pool on a best-effort basis. Their workloads run at a low priority.
+
+== 3. Prerequisites and Setup
+
+Before executing the lab steps, you must ensure the environment is correctly configured.
+
+=== 3.1. Required Operators
+
+Ensure the following Operators are installed and running on your OpenShift cluster:
+
+* Red Hat OpenShift AI Operator
+* Red Hat build of Kueue Operator
+
+=== 3.2. Enable the Ray Component in OpenShift AI
+
+The `RayCluster` resources used in this lab require the Ray Operator to be active. This is managed by RHOAI.
+
+. First, check if a `DataScienceCluster` resource already exists:
 +
-[source,sh,role=execute]
+[source,bash]
 ----
-podman ps
+oc get datasciencecluster default-dsc -n redhat-ods-applications
 ----
+
+. If the command above returns a `NotFound` error, you must create it. The following command will **create** the `DataScienceCluster` with Ray enabled, or **update** it if it already exists.
+
 +
-.Sample Output
-[source,texinfo,subs="attributes"]
+[source,bash]
 ----
-CONTAINER ID  IMAGE                        COMMAND           CREATED      STATUS      PORTS                 NAMES
-2dcfee9e50c4  docker.io/library/httpd:2.4  httpd-foreground  3 hours ago  Up 3 hours  0.0.0.0:8080->80/tcp  showroom-httpd
+cat <<EOF | oc apply -f -
+apiVersion: datasciencecluster.opendatahub.io/v1
+kind: DataScienceCluster
+metadata:
+  name: default-dsc
+  namespace: redhat-ods-applications
+spec:
+  components:
+    ray:
+      managementState: Managed
+EOF
 ----
 
-=== Lab Access
+. After running the command, verify that the Ray Operator pod starts successfully. Wait for the `kuberay-operator-...` pod to enter the 'Running' state before proceeding.
++
+[source,bash]
+----
+oc get pods -n redhat-ods-applications -w
+----
 
-The terminal window to your right is *already* logged into the lab environment as the `{ssh_user}` user via `ssh`. 
-All steps of this lab are to be completed as the `{ssh_user}` user.
+== 4. Lab Execution: SLA Enforcement
+
+This sequence demonstrates Kueue's ability to enforce quotas and SLAs through live preemption.
+
+=== 4.1. Step 1: Configure MaaS Tiers and Quotas
+
+Apply the `setup.yaml` file. This single file creates all the necessary resources for the demo: namespaces, priority classes, resource flavors, and the ClusterQueue/LocalQueue topology that defines our service tiers.
+
+[source,bash]
+----
+# Apply namespaces, CQs, LQs, ResourceFlavors, and Priority Classes
+oc apply -f setup.yaml
+----
+
+Verify that the ClusterQueues are active:
+[source,bash]
+----
+oc get cq
+# NAME        COHORT   STRATEGY         PENDING WORKLOADS   ADMITTED WORKLOADS
+# shared-cq   team-ab  BestEffortFIFO   0                   0
+# team-a-cq   team-ab  BestEffortFIFO   0                   0
+# team-b-cq   team-ab  BestEffortFIFO   0                   0
+----
+
+=== 4.2. Step 2: Deploy Low-Priority (On-Demand) Workload
+
+Simulate the On-Demand customer (`team-b`) deploying a non-critical workload. This job will be admitted by Kueue and consume resources from the shared pool.
+
+[source,bash]
+----
+# Deploy Team B's workload (raycluster-dev)
+oc apply -f workload-b-low-priority.yaml
+----
+
+Wait for the pods to start running and the workload to be admitted.
+
+[source,bash]
+----
+oc get pods -n team-b -w
+oc get workload -n team-b # Verify ADMITTED is True
+----
+
+=== 4.3. Step 3: Demonstrate Quota Enforcement (Optional)
+
+To prove that the quota is working, deploy a second, competing low-priority workload. Because the first job has consumed all available shared resources, this job will be queued by Kueue and will remain `Pending`.
+
+[source,bash]
+----
+# Deploy the competing workload
+oc apply -f workload-b-competing.yaml
+----
+[source,bash]
+----
+oc get workload -n team-b
+# NAME                                 JOB TYPE     JOB NAME                  LOCAL QUEUE   CLUSTER QUEUE   STATUS    AGE
+# raycluster-raycluster-dev...         RayCluster   raycluster-dev            lq-team-b     team-b-cq       Admitted  96s
+# raycluster-raycluster-dev-comp...    RayCluster   raycluster-dev-competing  lq-team-b     team-b-cq       Pending   15s
+----
+
+=== 4.4. Step 4: Deploy High-Priority (Reserved) Workload
+
+Simulate the Reserved MaaS customer (`team-a`) submitting a critical workload. Because its guaranteed resources are currently being used by the low-priority job from `team-b`, Kueue must enforce the SLA.
+
+[source,bash]
+----
+# Deploy Team A's workload (raycluster-prod)
+oc apply -f workload-a-high-priority.yaml
+----
+
+=== 4.5. Step 5: Observe Live Preemption
+
+This is the eye-catching moment of the demo. Monitor the workloads across all namespaces.
+
+[source,bash]
+----
+oc get workload -A -w
+----
+
+You will observe the following in real-time:
+. The `raycluster-dev` (Team B) workload will have its `ADMITTED` status switch from `True` to `False`.
+. The `raycluster-prod` (Team A) workload will have its `ADMITTED` status switch to `True`.
+. The pods in the `team-b` namespace will begin terminating as they are evicted.
+
+=== 4.6. Step 6: Verify Policy Enforcement
+
+Describe the preempted workload to see the explicit audit trail left by Kueue.
+
+[source,bash]
+----
+oc describe workload -n team-b raycluster-raycluster-dev-....
+----
+
+Look for the *Events* section at the bottom. You will see a message confirming that the workload was **Evicted** to make room for a higher-priority workload, proving the SLA was automatically enforced.
+
+== 5. Cleanup
+
+To remove all resources created during this lab, execute the following commands.
+
+[source,bash]
+----
+# 1. Delete the namespaces and all contained resources
+oc delete ns team-a team-b
+
+# 2. Delete the cluster-scoped Kueue objects
+oc delete clusterqueue --all
+oc delete resourceflavor --all
+oc delete workloadpriorityclass --all
+oc delete priorityclass prod-priority dev-priority
+----
