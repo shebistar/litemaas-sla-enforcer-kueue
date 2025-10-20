@@ -1,0 +1,59 @@
+# --- WORKLOAD B: Low-Priority (On-Demand Tier) ---
+# This RayCluster represents a non-critical job from an "On-Demand" MaaS customer (team-b).
+# It has a low priority and consumes shared resources from the cohort when they are available.
+# This is the workload that will be preempted by the high-priority job.
+apiVersion: ray.io/v1
+kind: RayCluster
+metadata:
+  name: raycluster-dev
+  namespace: team-b
+  labels:
+    # This label directs the workload to the LocalQueue in the team-b namespace.
+    kueue.x-k8s.io/queue-name: lq-team-b
+spec:
+  rayVersion: '2.9.0'
+  headGroupSpec:
+    rayStartParams: {}
+    template:
+      spec:
+        # This low-priority class makes it eligible for preemption.
+        priorityClassName: dev-priority
+        containers:
+          - name: ray-head
+            image: rayproject/ray:2.9.0
+            resources:
+              requests:
+                cpu: "1"
+                memory: "2Gi"
+              limits:
+                cpu: "1"
+                memory: "2Gi"
+            ports:
+              - containerPort: 6379
+                name: gcs-server
+              - containerPort: 8265
+                name: dashboard
+              - containerPort: 10001
+                name: client
+  workerGroupSpecs:
+  - replicas: 1
+    minReplicas: 1
+    maxReplicas: 1
+    groupName: small-group
+    rayStartParams: {}
+    template:
+      spec:
+        priorityClassName: dev-priority
+        containers:
+        - name: ray-worker
+          image: rayproject/ray:2.9.0
+          resources:
+            # It requests a significant portion of the shared CPU quota,
+            # ensuring a resource conflict when the high-priority job arrives.
+            requests:
+              cpu: "3"
+              memory: "4Gi"
+            limits:
+              cpu: "3"
+              memory: "4Gi"
+
