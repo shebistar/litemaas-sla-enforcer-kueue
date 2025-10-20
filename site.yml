@@ -1,6 +1,6 @@
 site:
   title: Platform Foundation Bootcamp - RHOAI 
-  url: https://redhat-ai-services.github.io/rhoai-platform-foundation-bootcamp-instructions/
+  url: https://shebistar.github.io/litemaas-sla-enforcer-kueue/
   start_page: modules::01_welcome.adoc
 
 ui:
@@ -9,7 +9,7 @@ ui:
   supplemental_files: ./content/supplemental-ui
 
 content:
-  edit_url: 'https://redhat-ai-services.github.io/rhoai-platform-foundation-bootcamp-instructions/edit/main/{path}'
+  edit_url: 'https://shebistar.github.io/litemaas-sla-enforcer-kueue/edit/main/{path}'
   sources:
     - url: ./
       start_path: content
