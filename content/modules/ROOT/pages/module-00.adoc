@@ -309,14 +309,14 @@ The GPU Operator will automatically detect this label and apply the new configur
 [source,bash]
 ----
 oc label --overwrite node \
-    --selector=nvidia.com/gpu.product=NVIDIA-A10G-SHARED \
+    --selector=nvidia.com/gpu.product=NVIDIA-L4-SHARED \
     nvidia.com/device-plugin.config=time-sliced
 ----
 
 [NOTE]
 .Label Selector for Nodes
 ====
-The selector value ``nvidia.com/gpu.product=NVIDIA-A10G-SHARED`` must match the GPU product name as labeled by the GPU Operator's Node Feature Discovery (NFD) component.
+The selector value ``nvidia.com/gpu.product=NVIDIA-L4-SHARED`` must match the GPU product name as labeled by the GPU Operator's Node Feature Discovery (NFD) component.
 ====
 
 ==== Verify Time Slicing was enabled successfully
@@ -324,7 +324,7 @@ The selector value ``nvidia.com/gpu.product=NVIDIA-A10G-SHARED`` must match the 
 [.console-input]
 [source,bash]
 ----
-oc get node --selector=nvidia.com/gpu.product=NVIDIA-A10G-SHARED -o json | jq '.items[0].status.capacity'
+oc get node --selector=nvidia.com/gpu.product=NVIDIA-L4-SHARED -o json | jq '.items[0].status.capacity'
 ----
 
 [source,bash]
@@ -343,7 +343,7 @@ oc get node --selector=nvidia.com/gpu.product=NVIDIA-A10G-SHARED -o json | jq '.
 [.console-input]
 [source,bash]
 ----
-oc get node --selector=nvidia.com/gpu.product=NVIDIA-A10G-SHARED -o json \
+oc get node --selector=nvidia.com/gpu.product=NVIDIA-L4-SHARED -o json \
  | jq '.items[0].metadata.labels' | grep nvidia
 ----
 

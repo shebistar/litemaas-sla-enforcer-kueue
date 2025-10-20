@@ -10,7 +10,7 @@ This lab demonstrates how to use Kueue to implement a multi-tiered service model
 == Prerequisites
 
 . **OpenShift AI Operator:** Ensure the OpenShift AI Operator is installed.
-. **GPU Worker Node:** You need at least one worker node with a time-sliced NVIDIA A10G GPU, as configured in the previous lab. On AWS, a `g5.2xlarge` instance is suitable.
+. **GPU Worker Node:** You need at least one worker node with a time-sliced NVIDIA L4 GPU, as configured in the previous lab. On AWS, a `g5.2xlarge` instance is suitable.
 . **GPU Node Taint:** The GPU node must be tainted.
 +
 [NOTE]
@@ -56,7 +56,7 @@ The focus in this Lab is on the GPU resources but a Kueue does support other res
 == Solution Overview
 We will use Kueue's `ResourceFlavor` and `ClusterQueue` objects to create our two-tiered system.
 
-. **ResourceFlavor:** We will define a `ResourceFlavor` that targets our specific time-sliced A10G GPUs using a `nodeLabel` selector. This ensures that all GPU requests are scheduled on the correct hardware.
+. **ResourceFlavor:** We will define a `ResourceFlavor` that targets our specific time-sliced L4 GPUs using a `nodeLabel` selector. This ensures that all GPU requests are scheduled on the correct hardware.
 
 . **ClusterQueues for Tiers:**
 * **Reserved Tier:** Each reserved customer (`customer-a`, `customer-b`) will get their own dedicated `ClusterQueue`. The `nominalQuota` in each queue defines their guaranteed number of GPU slices. This provides strong isolation and guarantees.
@@ -83,7 +83,7 @@ ____
 
 === Kueue Configuration
 
-In this scenario, the label selector is `nvidia.com/gpu.product: NVIDIA-A10G-SHARED`:
+In this scenario, the label selector is `nvidia.com/gpu.product: NVIDIA-L4-SHARED`:
 
 [.console-input]
 [source,yaml]
@@ -92,10 +92,10 @@ cat <<EOF | oc apply -f -
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: nvidia-a10g-shared
+  name: nvidia-l4-shared
 spec:
   nodeLabels:
-    nvidia.com/gpu.product: NVIDIA-A10G-SHARED
+    nvidia.com/gpu.product: NVIDIA-L4-SHARED
 EOF
 ----
 
@@ -137,7 +137,7 @@ spec:
     - coveredResources:
         - "nvidia.com/gpu"
       flavors:
-        - name: nvidia-a10g-shared
+        - name: nvidia-l4-shared
           resources:
             - name: "nvidia.com/gpu"
               nominalQuota: 4
@@ -161,7 +161,7 @@ spec:
     - coveredResources:
         - "nvidia.com/gpu"
       flavors:
-        - name: nvidia-a10g-shared
+        - name: nvidia-l4-shared
           resources:
             - name: "nvidia.com/gpu"
               nominalQuota: 4
@@ -185,7 +185,7 @@ spec:
     - coveredResources:
         - "nvidia.com/gpu"
       flavors:
-        - name: nvidia-a10g-shared
+        - name: nvidia-l4-shared
           resources:
             - name: "nvidia.com/gpu"
               nominalQuota: 8

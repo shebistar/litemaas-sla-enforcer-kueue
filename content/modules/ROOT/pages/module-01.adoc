@@ -7,7 +7,7 @@
 
 This lab explores GPU slicing and its application in workload prioritization. To fully grasp the significance of these topics, a solid understanding of workload sizing is essential. Therefore, we will begin by demonstrating the vRAM calculation required to serve an `ibm-granite/granite-3.3-2b-instruct` model. This example will underscore the importance of slicing GPUs into smaller, more efficient units.
 
-== Model Size
+== Model Sizing
 
 We will leverage vLLM (the engine used in the Red Hat Inference Server) and its use of https://arxiv.org/abs/2309.06180[PagedAttention], a technique that optimizes GPU memory management. To maximize the return on investment (ROI) of expensive GPU hardware, it is crucial to understand the precise memory consumption of a model. The following calculation for the `ibm-granite/granite-3.3-2b-instruct` model demonstrates that an entire GPU is often unnecessary, and without slicing techniques, valuable resources would be wasted.
 
