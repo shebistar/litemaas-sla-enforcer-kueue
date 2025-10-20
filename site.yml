@@ -1,5 +1,5 @@
 site:
-  title: Platform Foundation Bootcamp - RHOAI 
+  title: Taming GPU Chaos with Kueue
   url: https://shebistar.github.io/litemaas-sla-enforcer-kueue/
   start_page: modules::index.adoc
 
