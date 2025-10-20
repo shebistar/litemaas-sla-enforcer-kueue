@@ -1,7 +1,7 @@
 site:
   title: Platform Foundation Bootcamp - RHOAI 
   url: https://shebistar.github.io/litemaas-sla-enforcer-kueue/
-  start_page: modules::01_welcome.adoc
+  start_page: modules::index.adoc
 
 ui:
   bundle:
