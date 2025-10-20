@@ -53,15 +53,25 @@ We will configure two service tiers:
 
 Before executing the lab steps, you must ensure the environment is correctly configured.
 
-=== 3.1. Required Operators
+=== 3.1. Deploy the Lab Environment from the Demo Catalog
 
-Ensure the following Operators are installed and running on your OpenShift cluster:
+The very first step is to provision the correct environment from the Red Hat Demo Platform. This lab is designed to run on a specific configuration that includes OpenShift with pre-configured NVIDIA GPUs.
+
+*Navigate to the demo catalog and deploy an instance of the **RHOAI on OCP on AWS with NVIDIA GPUs** demo.*
+
+link:{https://catalog.demo.redhat.com/catalog?search=RHOAI+on+OCP+on+AWS+with+NVIDIA+GPUs&item=babylon-catalog-prod%2Fsandboxes-gpte.ocp4-demo-rhods-nvidia-gpu-aws.prod}[Click here to access the demo in the catalog].
+
+Once the environment is running, you can log in to the OpenShift cluster and proceed with the next steps.
+
+=== 3.2. Required Operators
+
+Ensure the following Operators are installed and running on your OpenShift cluster. The demo environment from the catalog should have these pre-installed.
 
 * Red Hat OpenShift AI Operator
 * Red Hat build of Kueue Operator
 * NVIDIA GPU Operator
 
-=== 3.2. Enable the Ray Component in OpenShift AI
+=== 3.3. Enable the Ray Component in OpenShift AI
 
 The `RayCluster` resources used in this lab require the Ray Operator to be active. This is managed by RHOAI.
 
