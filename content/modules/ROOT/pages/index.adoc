@@ -36,8 +36,6 @@ Allowing development teams to borrow idle resources safely.
 Enable teams to draw from a shared resource pool for CPU/Memory when available.
 |===
 
-[Image of a cloud computing architecture diagram]
-
 == 2. Lab Architecture
 
 This lab simulates a multi-tenant environment on OpenShift using several key components:
@@ -61,6 +59,7 @@ Ensure the following Operators are installed and running on your OpenShift clust
 
 * Red Hat OpenShift AI Operator
 * Red Hat build of Kueue Operator
+* NVIDIA GPU Operator
 
 === 3.2. Enable the Ray Component in OpenShift AI
 
@@ -81,7 +80,7 @@ oc get datasciencecluster default-dsc -n redhat-ods-applications
 [source,bash]
 ----
 cat <<EOF | oc apply -f -
-apiVersion: datasciencecluster.opendatahub.io/v1
+apiVersion: datasciencecluster.opendahub.io/v1
 kind: DataScienceCluster
 metadata:
   name: default-dsc
@@ -101,122 +100,19 @@ EOF
 oc get pods -n redhat-ods-applications -w
 ----
 
-== 4. Lab Execution: SLA Enforcement
+== 4. Lab Workflow: The SLA Preemption Scenario
 
-This sequence demonstrates Kueue's ability to enforce quotas and SLAs through live preemption.
+This lab demonstrates a complete lifecycle of quota management and SLA enforcement. After applying the `setup.yaml` file to establish the service tiers, the demonstration unfolds in four key phases:
 
-=== 4.1. Step 1: Configure MaaS Tiers and Quotas
+. *Phase 0: Configure GPU Time-Slicing*
+To ensure the lab can demonstrate multi-tenancy on limited GPU hardware, the first step is to enable the NVIDIA GPU Operator's Time-Slicing feature. This powerful capability partitions a single physical GPU into multiple smaller, virtual GPUs (vGPUs) that can be shared by different pods. For this lab, the execution steps will guide you through creating a configuration that slices each physical GPU into two virtual replicas. This allows more workloads to run concurrently, making the subsequent quota enforcement and preemption scenarios more impactful and easier to observe.
 
-Apply the `setup.yaml` file. This single file creates all the necessary resources for the demo: namespaces, priority classes, resource flavors, and the ClusterQueue/LocalQueue topology that defines our service tiers.
+. *Phase 1: On-Demand Usage & Quota Enforcement*
+The low-priority "On-Demand" user (`team-b`) submits their first workload (`workload-b-low-priority.yaml`). It is admitted by Kueue and begins consuming the shared resources. They then submit a second, competing workload (`workload-b-competing.yaml`). Because the first job has exhausted the shared quota, Kueue enforces the limit and this second workload remains `Pending` in the queue. This demonstrates basic resource control.
 
-[source,bash]
-[.console-input]
-----
-# Apply namespaces, CQs, LQs, ResourceFlavors, and Priority Classes
-oc apply -f setup.yaml
-----
+. *Phase 2: SLA Invocation*
+The high-priority "Reserved" user (`team-a`) submits their critical workload (`workload-a-high-priority.yaml`). This workload has a right to its guaranteed resources, but those resources (specifically CPU/Memory) are currently being used by `team-b`'s running job.
 
-Verify that the ClusterQueues are active:
-[.console-input]
-[source,bash]
-----
-oc get cq
-# NAME        COHORT   STRATEGY         PENDING WORKLOADS   ADMITTED WORKLOADS
-# shared-cq   team-ab  BestEffortFIFO   0                   0
-# team-a-cq   team-ab  BestEffortFIFO   0                   0
-# team-b-cq   team-ab  BestEffortFIFO   0                   0
-----
+. *Phase 3: Live Preemption*
+Kueue's preemption logic activates. It identifies that `team-a`'s workload has a higher priority and a claim to the resources. Kueue automatically revokes the admission of `team-b`'s workload, which causes its pods to be terminated. As soon as the resources are freed, Kueue admits `team-a`'s workload, which then starts running. The SLA has been enforced automatically, without any manual intervention.
 
-=== 4.2. Step 2: Deploy Low-Priority (On-Demand) Workload
-
-Simulate the On-Demand customer (`team-b`) deploying a non-critical workload. This job will be admitted by Kueue and consume resources from the shared pool.
-
-[.console-input]
-[source,bash]
-----
-# Deploy Team B's workload (raycluster-dev)
-oc apply -f workload-b-low-priority.yaml
-----
-
-Wait for the pods to start running and the workload to be admitted.
-
-[.console-input]
-[source,bash]
-----
-oc get pods -n team-b -w
-oc get workload -n team-b # Verify ADMITTED is True
-----
-
-=== 4.3. Step 3: Demonstrate Quota Enforcement (Optional)
-
-To prove that the quota is working, deploy a second, competing low-priority workload. Because the first job has consumed all available shared resources, this job will be queued by Kueue and will remain `Pending`.
-
-[.console-input]
-[source,bash]
-----
-# Deploy the competing workload
-oc apply -f workload-b-competing.yaml
-----
-[.console-input]
-[source,bash]
-----
-oc get workload -n team-b
-# NAME                                 JOB TYPE     JOB NAME                  LOCAL QUEUE   CLUSTER QUEUE   STATUS    AGE
-# raycluster-raycluster-dev...         RayCluster   raycluster-dev            lq-team-b     team-b-cq       Admitted  96s
-# raycluster-raycluster-dev-comp...    RayCluster   raycluster-dev-competing  lq-team-b     team-b-cq       Pending   15s
-----
-
-=== 4.4. Step 4: Deploy High-Priority (Reserved) Workload
-
-Simulate the Reserved MaaS customer (`team-a`) submitting a critical workload. Because its guaranteed resources are currently being used by the low-priority job from `team-b`, Kueue must enforce the SLA.
-
-[source,bash]
-[.console-input]
-----
-# Deploy Team A's workload (raycluster-prod)
-oc apply -f workload-a-high-priority.yaml
-----
-
-=== 4.5. Step 5: Observe Live Preemption
-
-This is the eye-catching moment of the demo. Monitor the workloads across all namespaces.
-
-[.console-input]
-[source,bash]
-----
-oc get workload -A -w
-----
-
-You will observe the following in real-time:
-. The `raycluster-dev` (Team B) workload will have its `ADMITTED` status switch from `True` to `False`.
-. The `raycluster-prod` (Team A) workload will have its `ADMITTED` status switch to `True`.
-. The pods in the `team-b` namespace will begin terminating as they are evicted.
-
-=== 4.6. Step 6: Verify Policy Enforcement
-
-Describe the preempted workload to see the explicit audit trail left by Kueue.
-
-[.console-input]
-[source,bash]
-----
-oc describe workload -n team-b raycluster-raycluster-dev-....
-----
-
-Look for the *Events* section at the bottom. You will see a message confirming that the workload was **Evicted** to make room for a higher-priority workload, proving the SLA was automatically enforced.
-
-== 5. Cleanup
-
-To remove all resources created during this lab, execute the following commands.
-
-[.console-input]
-[source,bash]
-----
-# 1. Delete the namespaces and all contained resources
-oc delete ns team-a team-b
-
-# 2. Delete the cluster-scoped Kueue objects
-oc delete clusterqueue --all
-oc delete resourceflavor --all
-oc delete workloadpriorityclass --all
-oc delete priorityclass prod-priority dev-priority
-----

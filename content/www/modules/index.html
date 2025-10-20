@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>I&#8217;m the lab_name var :: Platform Foundation Bootcamp - RHOAI</title>
+    <title>Taming GPU Chaos: Mastering AI Quotas with Kueue :: Taming GPU Chaos with Kueue</title>
     <link rel="canonical" href="https://shebistar.github.io/litemaas-sla-enforcer-kueue/modules/index.html">
     <link rel="next" href="module-00.html">
     <meta name="generator" content="Antora 3.1.14">
@@ -28,7 +28,7 @@
           </defs>
         </svg>
       </a>
-      <a class="navbar-item site-title" target="__blank" style="color: #fff !important;" href="https://shebistar.github.io/litemaas-sla-enforcer-kueue">Platform Foundation Bootcamp - RHOAI</a>
+      <a class="navbar-item site-title" target="__blank" style="color: #fff !important;" href="https://shebistar.github.io/litemaas-sla-enforcer-kueue">Taming GPU Chaos with Kueue</a>
     </div>
     <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
@@ -115,7 +115,7 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="module-04.html">1. Advanced GPU Quota Management and Preemption with Kueue</a>
+    <a class="nav-link" href="module-04.html">5. Advanced GPU Quota Management and Preemption with Kueue</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="module-04.html#_problem_statement">Problem Statement</a>
@@ -161,84 +161,207 @@
   <a href="index.html" class="home-link is-current"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="index.html">I&#8217;m the lab_name var</a></li>
+    <li><a href="index.html">Taming GPU Chaos: Mastering AI Quotas with Kueue</a></li>
   </ul>
 </nav>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">I&#8217;m the lab_name var</h1>
+<h1 class="page">Taming GPU Chaos: Mastering AI Quotas with Kueue</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_1_overview_and_business_value">1. 1. Overview and Business Value</a></li>
+<li><a href="#_2_lab_architecture">2. 2. Lab Architecture</a></li>
+<li><a href="#_3_prerequisites_and_setup">3. 3. Prerequisites and Setup</a>
+<ul class="sectlevel2">
+<li><a href="#_3_1_required_operators">3.1. 3.1. Required Operators</a></li>
+<li><a href="#_3_2_enable_the_ray_component_in_openshift_ai">3.2. 3.2. Enable the Ray Component in OpenShift AI</a></li>
+</ul>
+</li>
+<li><a href="#_4_lab_workflow_the_sla_preemption_scenario">4. 4. Lab Workflow: The SLA Preemption Scenario</a></li>
+</ul>
+</div>
 <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph">
-<p>The <code>lab_name</code> var, known as an asciidoc attribute, above was set in <code>./content/antora.yml</code> and can be used to set the lab_name or title of your content.
-You are both free to change its value and if you prefer to use a different var name, you can change the value of <code>lab_name</code>, for example to <code>title</code> in <code>./content/antora.yml</code> and then reference it in your content as <code>{title}</code>.<br></p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="_images/rhel-logo-black.jpg" alt="rhel-logo-black" width="55%" height="55%">
-</div>
+<div class="quoteblock abstract">
+<blockquote>
+This lab provides a hands-on demonstration of how to centralize, monetize, and control expensive AI compute infrastructure (like GPUs) using the Red Hat build of Kueue Operator on Red Hat OpenShift AI (RHOAI). You will simulate a Models-as-a-Service (MaaS) provider who offers different service tiers to customers, and then use Kueue&#8217;s powerful preemption capabilities to enforce a Service Level Agreement (SLA) in real-time.
+</blockquote>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_variables"><a class="anchor" href="#_variables"></a>Variables</h2>
+<h2 id="_1_overview_and_business_value"><a class="anchor" href="#_1_overview_and_business_value"></a>1. 1. Overview and Business Value</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Other vars can also be set there, such as <code>ssh_user</code> and <code>ssh_password</code>, and referenced inline in the lab content by using the <code>{foo}</code> syntax.</p>
+<p>Organizations often struggle with fragmented AI deployments, leading to idle GPUs and soaring operational costs. A MaaS provider centralizes this infrastructure to optimize hardware utilization, but requires a strong technical mechanism to enforce control and guarantee service levels for different pricing tiers. This lab demonstrates that mechanism.</p>
 </div>
-<div class="paragraph">
-<p>This is another var, or asciidoc attribute, from <code>./content/antora.yml</code> foo</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Business Goals and Technical Solutions</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">MaaS Challenge (Business Goal)</th>
+<th class="tableblock halign-left valign-top">Kueue Solution (Lab Action)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Monetization &amp; SLAs:</strong>
+Offering guaranteed vs. best-effort service levels.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Pricing Tiers:</strong>
+Define segregated <code>ClusterQueues</code> with <code>nominalQuota</code> to guarantee capacity for premium users (<strong>Reserved Tier</strong>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>SLA Enforcement &amp; Control:</strong>
+Guaranteeing mission-critical workloads always run.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Preemption:</strong>
+Use a high-priority job to automatically evict a running low-priority job when reserved resources are required.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Efficient Utilization:</strong>
+Allowing development teams to borrow idle resources safely.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Cohort Sharing:</strong>
+Enable teams to draw from a shared resource pool for CPU/Memory when available.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_writing_your_lab"><a class="anchor" href="#_writing_your_lab"></a>Writing your lab</h2>
+<h2 id="_2_lab_architecture"><a class="anchor" href="#_2_lab_architecture"></a>2. 2. Lab Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Whatever type of content you are writing we&#8217;ll refer to your <strong>content</strong> as "your lab" in this document.</p>
-</div>
-<div class="sect2">
-<h3 id="_lab_structure"><a class="anchor" href="#_lab_structure"></a>Lab structure</h3>
-<div class="paragraph">
-<p>Wether you are writing a lab</p>
+<p>This lab simulates a multi-tenant environment on OpenShift using several key components:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>First, we will build a monolithic application already compiled as RPM packages and put it into a container. This will allow us to deploy the application, copy it between machines, and update it separately from the operating system. This process affords us a portable and easily maintained component instead of tightly coupling the application with your operating system maintenance.</p>
+<p><strong>Red Hat OpenShift AI (RHOAI):</strong> Provides the foundational AI/ML platform and the Ray Operator for running distributed workloads.</p>
 </li>
 <li>
-<p>In closing we will build a second container on a different operating system version that makes an application not packaged into RPMs. This will be similar to a web application deployment, positioning the correct files at the right locations. To do this, we will pull a project from GitHub and position the component files within our container image. The purpose of this is to achieve a portable application container that can deploy on several different versions of Red Hat Enterprise Linux. This also provides the benefit of decoupling your application maintenance, which would all happen by building new containers versus operating system maintenance. The container is no longer reliant on the operating system installed on the machine where the application is deployed.</p>
+<p><strong>Red Hat build of Kueue Operator:</strong> The core component for queueing, quota management, and SLA enforcement.</p>
+</li>
+<li>
+<p><strong>RayCluster:</strong> A distributed computing workload, representing a typical AI/ML job that consumes significant resources.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We will configure two service tiers:</p>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Now let&#8217;s examine this cluster a bit more by describing the cluster (the <code>$GUID</code> environment variable is already set for you so you can immediately describe your individual cluster):</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">podman ps</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Sample Output</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">CONTAINER ID  IMAGE                        COMMAND           CREATED      STATUS      PORTS                 NAMES
-2dcfee9e50c4  docker.io/library/httpd:2.4  httpd-foreground  3 hours ago  Up 3 hours  0.0.0.0:8080->80/tcp  showroom-httpd</code></pre>
-</div>
-</div>
+<p><strong>Reserved Tier (<code>team-a</code>):</strong> Represents a premium customer with a guaranteed quota for GPUs and CPU/Memory. Their workloads run at a high priority.</p>
+</li>
+<li>
+<p><strong>On-Demand Tier (<code>team-b</code>):</strong> Represents a standard customer that can borrow idle CPU/Memory from a shared pool on a best-effort basis. Their workloads run at a low priority.</p>
 </li>
 </ol>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_prerequisites_and_setup"><a class="anchor" href="#_3_prerequisites_and_setup"></a>3. 3. Prerequisites and Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before executing the lab steps, you must ensure the environment is correctly configured.</p>
+</div>
+<div class="sect2">
+<h3 id="_3_1_required_operators"><a class="anchor" href="#_3_1_required_operators"></a>3.1. 3.1. Required Operators</h3>
+<div class="paragraph">
+<p>Ensure the following Operators are installed and running on your OpenShift cluster:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Red Hat OpenShift AI Operator</p>
+</li>
+<li>
+<p>Red Hat build of Kueue Operator</p>
+</li>
+<li>
+<p>NVIDIA GPU Operator</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_lab_access"><a class="anchor" href="#_lab_access"></a>Lab Access</h3>
+<h3 id="_3_2_enable_the_ray_component_in_openshift_ai"><a class="anchor" href="#_3_2_enable_the_ray_component_in_openshift_ai"></a>3.2. 3.2. Enable the Ray Component in OpenShift AI</h3>
 <div class="paragraph">
-<p>The terminal window to your right is <strong>already</strong> logged into the lab environment as the <code>devops</code> user via <code>ssh</code>.
-All steps of this lab are to be completed as the <code>devops</code> user.</p>
+<p>The <code>RayCluster</code> resources used in this lab require the Ray Operator to be active. This is managed by RHOAI.</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First, check if a <code>DataScienceCluster</code> resource already exists:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get datasciencecluster default-dsc -n redhat-ods-applications</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If the command above returns a <code>NotFound</code> error, you must create it. The following command will <strong>create</strong> the <code>DataScienceCluster</code> with Ray enabled, or <strong>update</strong> it if it already exists.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt;EOF | oc apply -f -
+apiVersion: datasciencecluster.opendahub.io/v1
+kind: DataScienceCluster
+metadata:
+  name: default-dsc
+  namespace: redhat-ods-applications
+spec:
+  components:
+    ray:
+      managementState: Managed
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>After running the command, verify that the Ray Operator pod starts successfully. Wait for the <code>kuberay-operator-&#8230;&#8203;</code> pod to enter the 'Running' state before proceeding.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n redhat-ods-applications -w</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_lab_workflow_the_sla_preemption_scenario"><a class="anchor" href="#_4_lab_workflow_the_sla_preemption_scenario"></a>4. 4. Lab Workflow: The SLA Preemption Scenario</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This lab demonstrates a complete lifecycle of quota management and SLA enforcement. After applying the <code>setup.yaml</code> file to establish the service tiers, the demonstration unfolds in four key phases:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Phase 0: Configure GPU Time-Slicing</strong>
+To ensure the lab can demonstrate multi-tenancy on limited GPU hardware, the first step is to enable the NVIDIA GPU Operator&#8217;s Time-Slicing feature. This powerful capability partitions a single physical GPU into multiple smaller, virtual GPUs (vGPUs) that can be shared by different pods. For this lab, the execution steps will guide you through creating a configuration that slices each physical GPU into two virtual replicas. This allows more workloads to run concurrently, making the subsequent quota enforcement and preemption scenarios more impactful and easier to observe.</p>
+</li>
+<li>
+<p><strong>Phase 1: On-Demand Usage &amp; Quota Enforcement</strong>
+The low-priority "On-Demand" user (<code>team-b</code>) submits their first workload (<code>workload-b-low-priority.yaml</code>). It is admitted by Kueue and begins consuming the shared resources. They then submit a second, competing workload (<code>workload-b-competing.yaml</code>). Because the first job has exhausted the shared quota, Kueue enforces the limit and this second workload remains <code>Pending</code> in the queue. This demonstrates basic resource control.</p>
+</li>
+<li>
+<p><strong>Phase 2: SLA Invocation</strong>
+The high-priority "Reserved" user (<code>team-a</code>) submits their critical workload (<code>workload-a-high-priority.yaml</code>). This workload has a right to its guaranteed resources, but those resources (specifically CPU/Memory) are currently being used by `team-b&#8217;s running job.</p>
+</li>
+<li>
+<p><strong>Phase 3: Live Preemption</strong>
+Kueue&#8217;s preemption logic activates. It identifies that `team-a&#8217;s workload has a higher priority and a claim to the resources. Kueue automatically revokes the admission of `team-b&#8217;s workload, which causes its pods to be terminated. As soon as the resources are freed, Kueue admits `team-a&#8217;s workload, which then starts running. The SLA has been enforced automatically, without any manual intervention.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
