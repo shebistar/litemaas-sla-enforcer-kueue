@@ -1,7 +1,7 @@
 ---
 site:
   title: Showroom Template Demo
-  url: https://redhat-scholars.github.io/course-template
+  url: https://github.com/shebistar/litemaas-sla-enforcer-kueue.git
   start_page: modules::index.adoc
 
 content:
