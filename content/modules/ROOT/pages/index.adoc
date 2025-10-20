@@ -68,6 +68,7 @@ The `RayCluster` resources used in this lab require the Ray Operator to be activ
 
 . First, check if a `DataScienceCluster` resource already exists:
 +
+[.console-input]
 [source,bash]
 ----
 oc get datasciencecluster default-dsc -n redhat-ods-applications
@@ -76,6 +77,7 @@ oc get datasciencecluster default-dsc -n redhat-ods-applications
 . If the command above returns a `NotFound` error, you must create it. The following command will **create** the `DataScienceCluster` with Ray enabled, or **update** it if it already exists.
 
 +
+[.console-input]
 [source,bash]
 ----
 cat <<EOF | oc apply -f -
@@ -93,6 +95,7 @@ EOF
 
 . After running the command, verify that the Ray Operator pod starts successfully. Wait for the `kuberay-operator-...` pod to enter the 'Running' state before proceeding.
 +
+[.console-input]
 [source,bash]
 ----
 oc get pods -n redhat-ods-applications -w
@@ -107,12 +110,14 @@ This sequence demonstrates Kueue's ability to enforce quotas and SLAs through li
 Apply the `setup.yaml` file. This single file creates all the necessary resources for the demo: namespaces, priority classes, resource flavors, and the ClusterQueue/LocalQueue topology that defines our service tiers.
 
 [source,bash]
+[.console-input]
 ----
 # Apply namespaces, CQs, LQs, ResourceFlavors, and Priority Classes
 oc apply -f setup.yaml
 ----
 
 Verify that the ClusterQueues are active:
+[.console-input]
 [source,bash]
 ----
 oc get cq
@@ -126,6 +131,7 @@ oc get cq
 
 Simulate the On-Demand customer (`team-b`) deploying a non-critical workload. This job will be admitted by Kueue and consume resources from the shared pool.
 
+[.console-input]
 [source,bash]
 ----
 # Deploy Team B's workload (raycluster-dev)
@@ -134,6 +140,7 @@ oc apply -f workload-b-low-priority.yaml
 
 Wait for the pods to start running and the workload to be admitted.
 
+[.console-input]
 [source,bash]
 ----
 oc get pods -n team-b -w
@@ -144,11 +151,13 @@ oc get workload -n team-b # Verify ADMITTED is True
 
 To prove that the quota is working, deploy a second, competing low-priority workload. Because the first job has consumed all available shared resources, this job will be queued by Kueue and will remain `Pending`.
 
+[.console-input]
 [source,bash]
 ----
 # Deploy the competing workload
 oc apply -f workload-b-competing.yaml
 ----
+[.console-input]
 [source,bash]
 ----
 oc get workload -n team-b
@@ -162,6 +171,7 @@ oc get workload -n team-b
 Simulate the Reserved MaaS customer (`team-a`) submitting a critical workload. Because its guaranteed resources are currently being used by the low-priority job from `team-b`, Kueue must enforce the SLA.
 
 [source,bash]
+[.console-input]
 ----
 # Deploy Team A's workload (raycluster-prod)
 oc apply -f workload-a-high-priority.yaml
@@ -171,6 +181,7 @@ oc apply -f workload-a-high-priority.yaml
 
 This is the eye-catching moment of the demo. Monitor the workloads across all namespaces.
 
+[.console-input]
 [source,bash]
 ----
 oc get workload -A -w
@@ -185,6 +196,7 @@ You will observe the following in real-time:
 
 Describe the preempted workload to see the explicit audit trail left by Kueue.
 
+[.console-input]
 [source,bash]
 ----
 oc describe workload -n team-b raycluster-raycluster-dev-....
@@ -196,6 +208,7 @@ Look for the *Events* section at the bottom. You will see a message confirming t
 
 To remove all resources created during this lab, execute the following commands.
 
+[.console-input]
 [source,bash]
 ----
 # 1. Delete the namespaces and all contained resources
