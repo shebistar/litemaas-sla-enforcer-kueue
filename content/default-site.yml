@@ -7,7 +7,6 @@ site:
 content:
   sources:
     - url: https://shebistar.github.io/litemaas-sla-enforcer-kueue/
-      start_path: content
 
 ui:
   bundle:
