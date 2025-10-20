@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Custom Notebook in RHOAI :: Platform Foundation Bootcamp - RHOAI</title>
+    <link rel="canonical" href="https://redhat-ai-services.github.io/rhoai-platform-foundation-bootcamp-instructions/modules/31_custom_notebook.html">
+    <meta name="generator" content="Antora 3.1.14">
+<link rel="stylesheet" href="../_/css/site.css"><link rel="stylesheet" href="../_/css/site-extra.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<meta name="robots" content="all">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://demo.redhat.com/images/favicon.ico" type="image/x-icon">
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar"  style="background-color: #131313 !important;">
+    <div class="navbar-brand">
+      <div style="display: flex; flex-direction:row; padding: 12px 32px; gap: 16px;">
+     </div>
+      <div class="navbar-item site-title" style="color: #fff !important;flex: 1;">Platform Foundation Bootcamp - RHOAI</div>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="modules" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title" style="display: none;"><a href="index.html" class=" query-params-link">Navigation</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="01_welcome.html">Welcome and Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="05_environment_provisioning.html">Environment Provisioning</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI-Accelerator</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="20_ai-accelerator_review.html">Project Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07_installation.html">Bootstrap Installation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="30_gitops_env_setup_dev_prod.html">Setup Dev &amp; Prod Environments</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">RHOAI Administration</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="32_dashboard_configuration.html">RHOAI Dashboard Configuration</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Notebooks</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="31_custom_notebook.html">Custom Notebook</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="09_remote_connect_notebook.html">Connect to Workbench Kernel</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Train, Store (S3), Deploy</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="33_model_training_car.html">Model Training</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="34_using_s3_storage.html">Using S3 Storage</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="36_deploy_model.html">Deploy Model</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Data Science Pipelines</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="40_setup_pipeline_server.html">Setup Pipeline Server</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="41_introduction_to_kfp_pipelines.html">KFP Pipelines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="kfp_elyra_differences.html">Comparison between Elyra and KFP</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="build_custom_runtime_image.html">Custom Runtime Image</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="introduction_to_elyra_pipelines.html">Elyra Pipelines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="42_working_with_pipelines.html">Working with Pipelines</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="43_custom_runtime_image.html">Advanced Pipeline Customization</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Distributed Training</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="50_distributed_training.html">Ray Cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Large Language Model [LLM]</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="60_llm_explore.html">Explore LLMs</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="70_rag_llm.html">RAG with LLM</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="composer_ai.html">Composer AI</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Monitoring Data Science Models</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="80_trustyai_overview.html">TrustyAI Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="81_llm_evaluation.html">Evaluating Large Language Models</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Disconnected Environment</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="disconnected_install.html">RHOAI on Disconnected Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">GPU as a Service</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="90_environment_provisioning.html">Provisioning a GPU Environment with NVIDIA A10G Tensor Core GPU</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="91_gpu_as_a_service_intro.html">Introduction: GPU as a Service with GPU slicing and Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="92_nvidia_gpu_operator.html">Configuring NVIDIA GPU Time-Slicing on OpenShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="93_kueue_setup.html">Red Hat build of Kueue Operator Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="94_kueue_gpu_pricing_tier.html">Implementing GPU Pricing Tiers with Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="95_kueue_fair_sharing.html">Advanced GPU Quota Management and Preemption with Kueue</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Model-as-a-Service</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="100_maas_intro.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="101_maas_bootstrap.html">Environment Bootstrap</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="102_maas_as_developer.html">Using MaaS as Developer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="103_maas_as_platform_engineer.html">Configure a new model</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="104_maas_monitor.html">Monitor usage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Agentic AI with Llama Stack</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="97_agentic_ai_llama_stack_introduction.html">Introduction &amp; Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="98_agentic_ai_llama_stack_notebook_agents.html">Agentic AI Agents with Llama Stack Clients</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="99_agentic_ai_llama_stack_playground.html">Llama Stack Playground</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#99_useful_tips.adoc">Useful Tips</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#97_syncing_fork.adoc">Syncing Forked Project</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Navigation</span>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="index.html">default</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="01_welcome.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li>Notebooks</li>
+    <li><a href="31_custom_notebook.html">Custom Notebook</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Custom Notebook in RHOAI</h1>
+<div class="sect1">
+<h2 id="_need_for_custom_notebooks"><a class="anchor" href="#_need_for_custom_notebooks"></a>Need for custom notebooks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RHOAI provides many pre-built notebooks like Standard Data Science notebook, Tensorflow notebook, Pytorch notebook etc. Data scientists can spin up these notebooks and start running their experiments and creating their machine learning models without much set up.</p>
+</div>
+<div class="paragraph">
+<p>These inbuilt notebooks come with most of the packages that one would need to run their Data Science projects. But the world of Data Science and Machine Learning is vast and there might be a need to download other python packages.</p>
+</div>
+<div class="paragraph">
+<p>In this case, the user can use the <code>pip install</code> command inside the notebook but this might lead to issues like kernel mismatches or limited visibility and control.</p>
+</div>
+<div class="paragraph">
+<p>The best and recommended solution in this case is to create a custom notebook. RHOAI has made it extremely easy to import a notebook image from any image registry.</p>
+</div>
+<div class="paragraph">
+<p>In the <a href="https://www.redhat.com/en/services/training/developing-and-deploying-aiml-applications-red-hat-openshift-ai-ai267">AI267</a> course, the content teaches you how to create a custom notebook image by taking an existing notebook image and adding additional python packages to it. This is a great way to create a custom notebook image, but what if you or your customer needs to create a custom notebook image from scratch or need to customize the notebook image even more. Your customer may need to know what is in the notebook image itself, or they may need to add additional software (such as database drivers) to the notebook image. We can utilize the notebook repository: <a href="https://github.com/opendatahub-io/notebooks/tree/main">https://github.com/opendatahub-io/notebooks/tree/main</a> to create a custom notebook image from the ground up. This repository where ODH and RHOAI workbenches are being created from. Let&#8217;s use this repository to create a custom notebook image.</p>
+</div>
+<div class="sect2">
+<h3 id="_notebooks_repository"><a class="anchor" href="#_notebooks_repository"></a>Notebooks Repository</h3>
+<div class="paragraph">
+<p>The <a href="https://github.com/opendatahub-io/notebooks/tree/main">notebooks repository</a> uses a <code>makefile</code> to create the notebook image. The <code>makefile</code> is a file that contains a set of directives used by a make build automation tool to build a set of target images. It utilizes a  build chain feature where it builds the base image first and then builds the images on top of the base image.</p>
+</div>
+<div class="paragraph">
+<p>Take a look at the <a href="https://github.com/opendatahub-io/notebooks/blob/main/docs/developer-guide.md">developer guide</a> to understand the notebooks build chain.</p>
+</div>
+<div class="paragraph">
+<p>The notebooks repository also has a Wiki of the different variations of images here: <a href="https://github.com/opendatahub-io/notebooks/wiki/Workbenches" class="bare">https://github.com/opendatahub-io/notebooks/wiki/Workbenches</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_steps_to_create_a_custom_notebook"><a class="anchor" href="#_steps_to_create_a_custom_notebook"></a>Steps to create a custom notebook</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can either use your local machine or a container to build the custom notebook image. The steps are the same for both except for the setup of the environment.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_using_your_dev_workstation"><a class="anchor" href="#_using_your_dev_workstation"></a>Using your dev workstation:</h3>
+<div class="paragraph">
+<p>The following steps are to make sure you have the necessary tools to run the notebooks repository on your local machine.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Make sure you have Python 3.12 installed on your machine. You can use the <code>pyenv</code> tool to manage your Python versions. Also install Pip for installing Python packages. Tested with version pip 25.0.1</p>
+</li>
+<li>
+<p>Install <em><strong>make</strong></em> (or <em><strong>gmake</strong></em>) on your local machine. Make is a build automation tool that automatically builds executable programs and libraries from source code by reading files called Makefiles which specify how to derive the target program. We need make <em><strong> version 4+ </strong></em> to build the notebooks repository.</p>
+</li>
+<li>
+<p>Install <em><strong>uv</strong></em> on your local machine. UV is a fast Python package installer and resolver written in Rust. It provides fast, reliable dependency resolution and package installation. Tested with version 0.8.12</p>
+</li>
+<li>
+<p>Install <em><strong>go</strong></em> on your local machine. The Go programming language is an open source project to make programmers more productive. Tested with version 1.24.0</p>
+</li>
+<li>
+<p>Install <em><strong>podman</strong></em> on your local machine. Podman is a tool to manage OCI containers and pods. It is a daemonless container engine for developing, managing, and running OCI containers on your workstation. Podman is a drop-in replacement for Docker. Tested with version 5.3.0</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_podman_to_run_the_builder_container"><a class="anchor" href="#_using_podman_to_run_the_builder_container"></a>Using Podman to run the builder container:</h3>
+<div class="paragraph">
+<p>We have created a container image that contains all the necessary tools to build the notebooks repository. This image is based on the repository: <a href="https://github.com/containers/image_build" class="bare">https://github.com/containers/image_build</a>. You can find the image contents here: <a href="https://github.com/redhat-ai-services/rhoai-platform-foundation-bootcamp-instructions/tree/main/custom-notebook-builder-container/podman/Containerfile" class="bare">https://github.com/redhat-ai-services/rhoai-platform-foundation-bootcamp-instructions/tree/main/custom-notebook-builder-container/podman/Containerfile</a>. This image is based on the latest fedora image and contains: podman, git, make, which, go, pip, python3.12 and uv.</p>
+</div>
+<div class="paragraph">
+<p>The image has already been built for you and is located here: <code>quay.io/asheet/custom-nb-builder-container:latest</code>.</p>
+</div>
+<div class="paragraph">
+<p>We can run this image using Podman and build/push our custom notebooks from within the container.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run the following command to run the container on podman:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">podman run -it --privileged --name custom-notebook-builder quay.io/asheet/custom-nb-builder-container:latest</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If running on an M-powered Mac, you will need to use the <code>--platform linux/amd64</code> flag to run the container.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">podman run -it --privileged --platform linux/amd64 --name custom-notebook-builder quay.io/asheet/custom-nb-builder-container:latest</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will run the container and you will now be inside the container.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_the_notebooks_repository_to_create_a_custom_notebook_image"><a class="anchor" href="#_using_the_notebooks_repository_to_create_a_custom_notebook_image"></a>Using the notebooks repository to create a custom notebook image</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log into <a href="https://quay.io">quay.io</a> from your web browser.</p>
+<details>
+<summary class="title">If you get an error saying your account is already associated with an existing Quay account.</summary>
+<div class="content">
+<div class="paragraph">
+<p>If you get this error:</p>
+</div>
+<div class="paragraph">
+<p><em>The e-mail address <a href="mailto:your-username@redhat.com">your-username@redhat.com</a> is already associated with an existing Quay account. Please log in with your username and password and associate your Red Hat account to use it in the future.</em></p>
+</div>
+<div class="paragraph">
+<p>The error message you see can be remedied by the following steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Please go to <a href="https://recovery.quay.io/signin">https://recovery.quay.io/signin/</a> and sign in with your existing Quay.io email address and password.</p>
+</li>
+<li>
+<p>Once in, open account settings, click on "External logins" on the left side, and then on the "Attach" link.</p>
+</li>
+<li>
+<p>Go to quay.io/signin and enter your RHCP data and you should be set, RHSSO button should work now. If needed try to Detach and reattach when in recovery mode.
+All accounts in Quay must have unique e-mail addresses and usernames. The issue here is that there exists a user under e-mail (your email address) in Quay&#8217;s db. Logging in with a user with the same e-mail address will not work because users are not connected via a special table in Quay&#8217;s db and Quay will perceive logging in via that button as though a new user is coming in. Quay will then check if the e-mail address is unique and will find that it&#8217;s not and will error out.</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>Clone the notebooks git repository with the following command:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">git clone https://github.com/opendatahub-io/notebooks.git</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Navigate into the folder you just cloned.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">cd notebooks</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Log into the quay.io registery from your CLI.</p>
+<details>
+<summary class="title">Generate quay.io cli password from settings</summary>
+<div class="content">
+<div class="paragraph">
+<p>Log into <a href="https://quay.io">quay.io</a> and go to <em><strong>Account Settings</strong></em> in the top right. In the Account settings, <em><strong>Generate Encrypted Password</strong></em>.</p>
+</div>
+<div class="imageblock bordershadow">
+<div class="content">
+<img src="_images/quay_cli_password.png" alt="quay cli password">
+</div>
+</div>
+<div class="paragraph">
+<p>Enter your password and then choose the <em><strong>Podman Login</strong></em> or <em><strong>Docker Login</strong></em> tab. Use this when logging into quay.io from Podman or Docker.</p>
+</div>
+</div>
+</details>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">podman login -u='username' -p='password' quay.io</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open and read the <em><strong>Makefile</strong></em> and try to understand the build chain and how the make file works.</p>
+</li>
+<li>
+<p>Let&#8217;s build an image from the notebooks project, specifically the Jupyter Data Science UBI9 Python 3.12 image.</p>
+</li>
+<li>
+<p>Before we build, let&#8217;s modify the image and add a Python package to the jupyter-data-science-ubi9-python-3.12 image.</p>
+</li>
+<li>
+<p>Change directory to the <code>jupyter/datascience/ubi9-python-3.12</code> directory.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">cd jupyter/datascience/ubi9-python-3.12</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open and edit the <em><strong>pyproject.toml</strong></em> in the <code>jupyter/datascience/ubi9-python-3.12</code> directory. This file contains the list of Python packages that are installed in the image.</p>
+</li>
+<li>
+<p>Add a new Python package to the <em><strong>pyproject.toml</strong></em>. For example, let&#8217;s add the <code>art</code> package to the <em><strong>pyproject.toml</strong></em> so we can make fancy ASCII art in our notebook.</p>
+<div class="paragraph">
+<p>After line 21, add the following line and save the file:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">"art~=6.4.0",</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Use <code>uv lock</code> to add the new package to the <code>pylock.toml</code>. This updates the pip lock file with the new package. Run the following command:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">uv lock</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">If you get an error saying uv command is not found</summary>
+<div class="content">
+<div class="paragraph">
+<p>then:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">dnf install uv -y
+uv python install ==3.12.*</code></pre>
+</div>
+</div>
+</div>
+</details>
+</li>
+<li>
+<p>The <code>sync-python-lockfiles.sh</code> script will update the <code>pylock.toml</code> file with the new package. Run the following command (still in the <code>jupyter/datascience/ubi9-python-3.12</code> directory):</p>
+</li>
+</ol>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">cd ../../../
+./scripts/sync-python-lockfiles.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+You can now see that the <strong><em>Art</em></strong> package has been added to the <code>pylock.toml</code> file. As well as updating some of the existing packages.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Now that we have added the new package to the image, we need to build the image. Change directory to the root of the repository project. After running this command you should be in the <code>notebooks</code> directory.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">cd ../../../</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Let&#8217;s build and push the jupyter-datascience-ubi9-python-3.12 image. Running the make file will build the image and push the image to your quay.io repository. Run the following command:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">make jupyter-datascience-ubi9-python-3.12 \
+  IMAGE_REGISTRY=quay.io/{quay_id}/workbench-images \
+  RELEASE=2024b</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">If using gmake</summary>
+<div class="content">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-terminal hljs" data-lang="terminal">gmake jupyter-datascience-ubi9-python-3.12 \
+  IMAGE_REGISTRY=quay.io/{quay_id}/workbench-images \
+  RELEASE=2024b</code></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Note: If you&#8217;re on a M-powered Mac, you need to build with <code>--platform linux/amd64</code>. In the Makefile, you can add the <em><strong>--platform linux/amd64</strong></em> build arguments to the container build command. Edit <strong>line 69</strong> in the <strong>Makefile</strong> to be: <code>$(eval BUILD_ARGS := --platform linux/amd64)</code></p>
+</div>
+<div class="paragraph">
+<p>This takes some time to build. It will build the base image first and then build the image on top of the base image. The image will then be pushed to the quay.io registry under your account in the <strong><em>workbench</em></strong> folder.</p>
+</div>
+</li>
+<li>
+<p>Check your quay registry to see the image you just built. <a href="https://quay.io/repository/quay_id/workbench-images?tab=tags">https://quay.io/repository/quay_id/workbench-images?tab=tags</a></p>
+</li>
+<li>
+<p>A new repository named <code>workbench-images</code> will get created in your quay.io account. This will get created as a Private repository. Convert it into a public repository in the settings.</p>
+</li>
+</ol>
+</div>
+<details>
+<summary class="title">How to make a quay.io repository public</summary>
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to your quay.io repository and click on the <em><strong>Settings</strong></em> tab.</p>
+</li>
+<li>
+<p>Scroll down to the <em><strong>Repository Visibility</strong></em> section.</p>
+</li>
+<li>
+<p>Click on the <em><strong>Make Public</strong></em> button.</p>
+</li>
+<li>
+<p>Confirm the action by clicking on the <em><strong>Make Public</strong></em> button again.</p>
+</li>
+<li>
+<p>The repository is now public and can be accessed by anyone.</p>
+</li>
+</ol>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_custom_workbench_in_rhoai"><a class="anchor" href="#_create_a_custom_workbench_in_rhoai"></a>Create a custom-workbench in RHOAI</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Let&#8217;s now add our newly build image (that&#8217;s in your quay repository) to RHOAI. In the <code>parasol-insurance</code> tenant (<code>ai-accelerator/tenants/parasol-insurance</code>), create a directory named <code>custom-workbench</code></p>
+</li>
+<li>
+<p>Create the <code>base</code> and <code>overlays</code> directories inside the <code>custom-workbench</code> directory</p>
+</li>
+<li>
+<p>Create a file named <code>kustomization.yaml</code> inside the <code>custom-workbench/base</code> directory with the following content:</p>
+<div class="listingblock console-input">
+<div class="title">kustomization.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - custom-workbench-is.yaml
+  - custom-workbench-pvc.yaml
+  - custom-workbench-notebook.yaml</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a file named <code>custom-workbench-is.yaml</code> inside the <code>custom-workbench/base</code> directory with the following content:</p>
+<div class="listingblock console-input">
+<div class="title">custom-workbench-is.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-creator: admin
+    opendatahub.io/notebook-image-desc: This is a custom notebook for running the parasol insurance code
+    opendatahub.io/notebook-image-name: Custom Notebook
+    opendatahub.io/notebook-image-url: 'quay.io/{quay_id}/workbench-images:jupyter-datascience-ubi9-python-3.12-2024b_{update_this}'
+    opendatahub.io/recommended-accelerators: '[]'
+  name: custom-notebook
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: latest
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[]'
+        opendatahub.io/notebook-software: '[]'
+        openshift.io/imported-from: 'quay.io/{quay_id}/workbench-images:jupyter-datascience-ubi9-python-3.12-2024b_{update_this}'
+      from:
+        kind: DockerImage
+        name: 'quay.io/{quay_id}/workbench-images:jupyter-datascience-ubi9-python-3.12-2024b_{update_this}'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Replace quay_id with your quay id. This ensures that the image stream you are creating references to the image you pushed to quay.io</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Create a file named <code>custom-workbench-pvc.yaml</code> inside the <code>custom-workbench/base</code> directory with the following content:</p>
+<div class="listingblock console-input">
+<div class="title">custom-workbench-pvc.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: custom-workbench
+  namespace: parasol-insurance
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 40Gi
+  volumeMode: Filesystem</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a file named <code>custom-workbench-notebook.yaml</code> inside the <code>custom-workbench/base</code> directory with the following content:</p>
+<div class="listingblock console-input">
+<div class="title">custom-workbench-notebook.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  annotations:
+    notebooks.opendatahub.io/inject-oauth: 'true'
+    opendatahub.io/image-display-name: Datascience notebook
+    notebooks.opendatahub.io/oauth-logout-url: ''
+    opendatahub.io/accelerator-name: ''
+    openshift.io/description: ''
+    openshift.io/display-name: custom-workbench
+    notebooks.opendatahub.io/last-image-selection: 'custom-notebook:latest'
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+  name: custom-workbench
+  namespace: parasol-insurance
+spec:
+  template:
+    spec:
+      affinity: {}
+      containers:
+        - name: custom-workbench
+          image: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/custom-notebook:latest'
+          resources:
+            limits:
+              cpu: '2'
+              memory: 8Gi
+            requests:
+              cpu: '1'
+              memory: 8Gi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/parasol-insurance/custom-workbench/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /notebook/parasol-insurance/custom-workbench/api
+              port: notebook-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env:
+            - name: NOTEBOOK_ARGS
+              value: |-
+                --ServerApp.port=8888
+                --ServerApp.token=''
+                --ServerApp.password=''
+                --ServerApp.base_url=/notebook/parasol-insurance/custom-workbench
+                --ServerApp.quit_button=False
+                --ServerApp.tornado_settings={"user":"user1","hub_host":"","hub_prefix":"/projects/parasol-insurance"}
+            - name: JUPYTER_IMAGE
+              value: 'image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/custom-notebook:latest'
+            - name: PIP_CERT
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: SSL_CERT_FILE
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: PIPELINES_SSL_SA_CERTS
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+            - name: GIT_SSL_CAINFO
+              value: /etc/pki/tls/custom-certs/ca-bundle.crt
+          ports:
+            - containerPort: 8888
+              name: notebook-port
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /opt/app-root/src
+              name: custom-workbench
+            - mountPath: /dev/shm
+              name: shm
+            - mountPath: /etc/pki/tls/custom-certs/ca-bundle.crt
+              name: trusted-ca
+              readOnly: true
+              subPath: ca-bundle.crt
+          workingDir: /opt/app-root/src
+      enableServiceLinks: false
+      serviceAccountName: custom-workbench
+      volumes:
+        - name: custom-workbench
+          persistentVolumeClaim:
+            claimName: custom-workbench
+        - emptyDir:
+            medium: Memory
+          name: shm
+        - configMap:
+            items:
+              - key: ca-bundle.crt
+                path: ca-bundle.crt
+            name: workbench-trusted-ca-bundle
+            optional: true
+          name: trusted-ca</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a directory named <code>parasol-insurance-dev</code> under the <code>custom-workbench/overlays</code> directory</p>
+</li>
+<li>
+<p>Create a file named <code>kustomization.yaml</code> inside the <code>custom-workbench/overlays/parasol-insurance-dev</code> directory with the following content:</p>
+<div class="listingblock console-input">
+<div class="title">kustomization.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Push the changes to the git repository</p>
+</li>
+<li>
+<p>Navigate to the <code>parasol-insurance</code> data science project in RHOAI, and notice the <code>custom-workbench</code> notebook available in the <strong>Workbenches</strong> tab:</p>
+<div class="imageblock bordershadow">
+<div class="content">
+<img src="_images/01_custom_workbench.png" alt="Custom workbench">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>Verify the new custom workbench spins up successfully and the <code>art</code> package is available in the notebook.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>pip list</code> in the notebook terminal to verify the <code>art</code> package is installed.</p>
+</div>
+<div class="paragraph">
+<p>Create a new notebook and run the following code to see the ASCII art:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">from art import *
+hello_world=text2art("Hello World")
+print(hello_world)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please add an overlay for the <code>parasol-insurance-prod</code> environment as well. This is not covered in this lab but is a good exercise to do.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To check your work please refer to <a href="https://github.com/redhat-ai-services/ai-accelerator-qa/tree/2.16-parasol-dev-prod">This Branch</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_questions_for_further_consideration"><a class="anchor" href="#_questions_for_further_consideration"></a>Questions for Further Consideration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Additional questions that could be discussed for this topic:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>How many Python packages are included in your typical data scientist development environment? Are there any packages that are unique to your team?</p>
+</li>
+<li>
+<p>How do you handle continuous updates in your development environment, remembering that AI/ML is an evolving landscape, and new packages are released all the time, and existing packages are undergoing very frequent updates?</p>
+</li>
+<li>
+<p>Can data scientists ask for new packages in a securely controlled development environment?</p>
+</li>
+<li>
+<p>Where do you store source code for model experimentation and training?</p>
+</li>
+<li>
+<p>Do you think that cluster storage (such as an OpenShift PVC) is a good permanent location for source code, so that in the event of failure the source is not lost?</p>
+</li>
+<li>
+<p>How do your teams of data scientists collaborate on notebooks when training models or performing other experiments?</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a href="https://demo.redhat.com" target="_blank" class="poweredBy"><p>Powered by</p><div class="labInfo_poweredBy" style="display: block; width: 260px;"><svg class="labInfo_poweredByLogo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508.5 178.739"><g fill="#111"><path d="M316.6 63.2v-56H342a21.279 21.279 0 0 1 7.8 1.3 18.111 18.111 0 0 1 5.9 3.5 15.577 15.577 0 0 1 5 11.8 15.051 15.051 0 0 1-3.1 9.5 16.836 16.836 0 0 1-8.4 5.8l12.5 24.1h-9.3l-11.6-23H325v23Zm24.7-48.6H325v18.7h16.3q5.25 0 8.1-2.7a8.7 8.7 0 0 0 2.8-6.6 8.7 8.7 0 0 0-2.8-6.6c-1.8-1.9-4.5-2.8-8.1-2.8ZM364.1 42.8a20.674 20.674 0 0 1 1.6-8.2 20.288 20.288 0 0 1 4.3-6.7 19.92 19.92 0 0 1 6.5-4.5 19.718 19.718 0 0 1 8-1.6 18.463 18.463 0 0 1 7.8 1.6 18.677 18.677 0 0 1 6.2 4.5 20.927 20.927 0 0 1 4.1 6.8 23.2 23.2 0 0 1 1.5 8.4v2.3H372a13.822 13.822 0 0 0 4.6 8.4 13.6 13.6 0 0 0 9.1 3.3 15.553 15.553 0 0 0 5.7-1 12.858 12.858 0 0 0 4.6-2.6l5.1 5a25.983 25.983 0 0 1-7.4 4.1 24.69 24.69 0 0 1-8.4 1.3 21.306 21.306 0 0 1-8.4-1.6 22.763 22.763 0 0 1-6.8-4.4 20.788 20.788 0 0 1-4.5-6.7 23.2 23.2 0 0 1-1.5-8.4Zm20.2-14.2a11.527 11.527 0 0 0-8 3 13.046 13.046 0 0 0-4.2 7.8h24.2a13.091 13.091 0 0 0-4.2-7.8 11.106 11.106 0 0 0-7.8-3ZM443.1 63.2v-3.8a19.448 19.448 0 0 1-5.8 3.3 18.924 18.924 0 0 1-6.7 1.2 19.824 19.824 0 0 1-14.6-6.1 22.268 22.268 0 0 1-4.4-6.7 21.812 21.812 0 0 1 0-16.4A20.534 20.534 0 0 1 416 28a19.335 19.335 0 0 1 6.6-4.5 20.334 20.334 0 0 1 8.2-1.6 20.7 20.7 0 0 1 6.6 1 19.415 19.415 0 0 1 5.7 3V7.2l8-1.8v57.8Zm-25.2-20.4a13.718 13.718 0 0 0 4 10.1 13.45 13.45 0 0 0 9.8 4.1 14.956 14.956 0 0 0 6.4-1.3 15.954 15.954 0 0 0 4.9-3.6V33.6a14.988 14.988 0 0 0-4.9-3.5 15.271 15.271 0 0 0-6.4-1.3 13.423 13.423 0 0 0-9.9 4 13.806 13.806 0 0 0-3.9 10ZM478.1 63.2v-56h8.4v24h29.8v-24h8.4v56h-8.4V38.8h-29.8v24.4ZM547.2 64a16.483 16.483 0 0 1-10.8-3.5 11.037 11.037 0 0 1-4.2-8.9 10.375 10.375 0 0 1 4.7-9.2 20.76 20.76 0 0 1 11.8-3.2 27.841 27.841 0 0 1 5.8.6 27.374 27.374 0 0 1 5.3 1.6v-4.3a8.143 8.143 0 0 0-2.6-6.5 11.452 11.452 0 0 0-7.4-2.2 20.788 20.788 0 0 0-6 .9 34.616 34.616 0 0 0-6.6 2.6l-3-6a54.169 54.169 0 0 1 8.4-3.1 33.18 33.18 0 0 1 8.3-1.1c5.2 0 9.3 1.3 12.2 3.8s4.4 6.1 4.4 10.8v27h-7.8v-3.5a19.441 19.441 0 0 1-5.8 3.2 23.54 23.54 0 0 1-6.7 1Zm-7.3-12.6a5.646 5.646 0 0 0 2.6 4.8 11.193 11.193 0 0 0 6.6 1.8 16.256 16.256 0 0 0 5.9-1 14.449 14.449 0 0 0 4.9-2.9V47a19.778 19.778 0 0 0-4.8-1.8 24.933 24.933 0 0 0-5.7-.6 11.859 11.859 0 0 0-6.8 1.8 5.728 5.728 0 0 0-2.7 5ZM580.6 53.2v-24H572v-6.7h8.6V12.1l7.9-1.9v12.3h12v6.7h-12v22.1a5.94 5.94 0 0 0 1.4 4.4c.9.9 2.5 1.3 4.6 1.3a23.637 23.637 0 0 0 3-.2 10.857 10.857 0 0 0 2.8-.8v6.7a19.28 19.28 0 0 1-3.8.9 27.484 27.484 0 0 1-3.8.3c-3.9 0-7-.9-9-2.8-2-1.7-3.1-4.4-3.1-7.9Z"></path></g><path d="M127 90.2c12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4L149.8 37c-1.7-7.1-3.2-10.3-15.7-16.6-9.7-5-30.8-13.1-37.1-13.1-5.8 0-7.5 7.5-14.4 7.5-6.7 0-11.6-5.6-17.9-5.6-6 0-9.9 4.1-12.9 12.5 0 0-8.4 23.7-9.5 27.2a4.216 4.216 0 0 0-.3 1.9c0 9.2 36.3 39.4 85 39.4Zm32.5-11.4c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3C21.8 58.8 0 61.8 0 81c0 31.5 74.6 70.3 133.7 70.3 45.3 0 56.7-20.5 56.7-36.6-.1-12.8-11-27.3-30.9-35.9Z" fill="#e00"></path><path d="M159.5 78.8c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3l3.7-9.1a4.877 4.877 0 0 0-.3 2c0 9.2 36.3 39.4 85 39.4 12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4Z"></path><path d="M253.5 158.7a2.22 2.22 0 0 1-2.2-2.2V2.2a2.2 2.2 0 0 1 4.4 0v154.2a2.242 2.242 0 0 1-2.2 2.3Z" fill="#111"></path><text data-name="Demo Platform" transform="translate(1186 149)" fill="#111" font-size="82" font-family="'RedHatDisplay', 'Overpass', overpass, helvetica, arial, sans-serif" font-weight="700"><tspan x="-877.892" y="0">Demo Platform</tspan></text></svg></div></a>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

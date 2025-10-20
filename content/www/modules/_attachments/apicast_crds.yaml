@@ -1,0 +1,193 @@
+kind: Backend
+apiVersion: capabilities.3scale.net/v1beta1
+metadata:
+  name: granite-3.3-2b-instruct
+  namespace: 3scale
+spec:
+  metrics:
+    hits:
+      description: Number of API hits
+      friendlyName: Hits
+      unit: hit
+  name: granite-3.3-2b-instruct
+  privateBaseURL: 'https://granite-vllm-modelcar-serverless.apps.cluster-g4skb.g4skb.sandbox5293.opentlc.com'
+  systemName: granite
+---
+apiVersion: capabilities.3scale.net/v1beta1
+kind: Product
+metadata:
+  name: granite-3.3-2b-instruct
+  namespace: 3scale
+spec:
+  metrics:
+    completion_tokens:
+      description: Number of completion tokens
+      friendlyName: Completion Tokens
+      unit: token
+    hits:
+      description: Number of API hits
+      friendlyName: Hits
+      unit: hit
+    prompt_tokens:
+      description: Number of prompt tokens
+      friendlyName: Prompt Tokens
+      unit: token
+    total_tokens:
+      description: Number of total tokens
+      friendlyName: Total Tokens
+      unit: token
+  deployment:
+    apicastHosted:
+      authentication:
+        userkey:
+          authUserKey: Authorization
+          credentials: authorization
+  backendUsages:
+    granite:
+      path: /
+  mappingRules:
+    - httpMethod: GET
+      increment: 1
+      metricMethodRef: health
+      pattern: /health
+    - httpMethod: POST
+      increment: 1
+      metricMethodRef: tokenize
+      pattern: /tokenize
+    - httpMethod: POST
+      increment: 1
+      metricMethodRef: detokenize
+      pattern: /detokenize
+    - httpMethod: GET
+      increment: 1
+      metricMethodRef: models
+      pattern: /v1/models
+    - httpMethod: GET
+      increment: 1
+      metricMethodRef: version
+      pattern: /version
+    - httpMethod: POST
+      increment: 1
+      metricMethodRef: chat/completions
+      pattern: /v1/chat/completions
+    - httpMethod: POST
+      increment: 1
+      metricMethodRef: completions
+      pattern: /v1/completions
+    - httpMethod: POST
+      increment: 1
+      metricMethodRef: embeddings
+      pattern: /v1/embeddings
+  name: granite-3.3-2b-instruct
+  policies:
+    - configuration:
+        allow_headers:
+          - Authorization
+          - Content-type
+          - Accept
+        allow_methods: []
+        allow_origin: '*'
+      configurationRef: {}
+      enabled: true
+      name: cors
+      version: builtin
+    - configuration:
+        connect_timeout: 300
+        read_timeout: 300
+        send_timeout: 300
+      configurationRef: {}
+      enabled: true
+      name: upstream_connection
+      version: builtin
+    - configuration:
+        enable_sse_support: true
+        rules:
+          - condition:
+              combine_op: and
+              operations:
+                - left: '{{status}}'
+                  left_type: liquid
+                  op: '=='
+                  right: '200'
+                  right_type: plain
+            increment: '{{ llm_usage.total_tokens }}'
+            metric: total_tokens
+          - condition:
+              combine_op: and
+              operations:
+                - left: '{{status}}'
+                  left_type: liquid
+                  op: '=='
+                  right: '200'
+                  right_type: plain
+            increment: '{{ llm_usage.prompt_tokens }}'
+            metric: prompt_tokens
+          - condition:
+              combine_op: and
+              operations:
+                - left: '{{status}}'
+                  left_type: liquid
+                  op: '=='
+                  right: '200'
+                  right_type: plain
+            increment: '{{ llm_usage.completion_tokens }}'
+            metric: completion_tokens
+      configurationRef: {}
+      enabled: true
+      name: llm-metrics
+      version: '0.1'
+    - configuration: {}
+      configurationRef: {}
+      enabled: true
+      name: apicast
+      version: builtin
+  methods:
+    chat/completions:
+      friendlyName: Chat Completions
+    completions:
+      friendlyName: Completions
+    detokenize:
+      friendlyName: Detokenize
+    embeddings:
+      friendlyName: Embeddings
+    health:
+      friendlyName: Health
+    models:
+      friendlyName: Models
+    tokenize:
+      friendlyName: Tokenize
+    version:
+      friendlyName: Version
+  providerAccountRef:
+    name: 3scale-maas-tenant-secret
+  systemName: granite
+  applicationPlans:
+    standard:
+      appsRequireApproval: false
+      name: Standard Plan
+      published: true
+---
+apiVersion: capabilities.3scale.net/v1beta1
+kind: ActiveDoc
+metadata:
+  name: granite-3.3-2b-instruct
+  namespace: 3scale
+  labels:
+    app.kubernetes.io/instance: 3scale
+spec:
+  activeDocOpenAPIRef:
+    url: 'https://raw.githubusercontent.com/redhat-ai-services/ai-accelerator-examples/refs/heads/main/examples/models-as-a-service-3scale/3scale/api_definitions/llama-32-1b-instruct-cpu.json'
+  name: granite-3.3-2b-instruct
+  productSystemName: granite
+  published: true
+  skipSwaggerValidations: true
+  systemName: granite
+---
+kind: ProxyConfigPromote
+apiVersion: capabilities.3scale.net/v1beta1
+metadata:
+  name: granite-3.3-2b-instruct
+  namespace: 3scale
+spec:
+  productCRName: granite-3.3-2b-instruct
+  production: true

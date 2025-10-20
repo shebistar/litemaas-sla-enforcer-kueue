@@ -1,0 +1,121 @@
+# Mock customer pre-engagement conversation
+
+## Introduction
+We would like to model a conversation between a Red Hat consulting resource and a customer to get the 'feel' for the types of questions and answers that we would typically expect during a pre-engagement/kick-off call for a RHOAI engagement.
+
+This activity should help develop a better understanding of both the technical and strategic aspects of this type of engagement.
+
+Following this activity, there will be a class debrief to review the interactions, highlighting any notable discussions or challenges and every student (no matter which role) will fill out a 3-point estimate to scope this engagement.
+
+## Activity Guidelines
+Ideally for this activity, the class should be split into smaller groups with each group facilitated by an instructor or designated person that will act as the client. The person acting as the customer resource should pick one of the following titles and role play as an enterprise client acting in the capacity of their title: 
+
+* Container platform team analyst
+* IT infrastructure team lead
+* Director of IT
+* DevOps engineer
+
+.**For Consultants:**
+* Your goal is to gather detailed information about the customer's environment and needs.
+* Use the provided questions as a guide, listen carefully to the responses, and take notes -- you will be filling in a 3-point estimate from this conversation.
+* Feel free to ask follow-up questions based on the answers to gather more specifics.
+* Ensure you cover questions in each section to help understand the environment and engagement goals.
+
+.**For Customers:**
+* Your goal is to provide accurate information about your environment and requirements. Your level of clarity, detail, and motivations can be guided by your chosen role.
+* Feel free to elaborate and add plausible / realistic details to your answers.
+* Try to maintain consistency so that your answers don't contradict each other.
+* Collaborate and be open, we're **not** trying to stump or confuse the consulting team.
+
+**Activity Execution (~45 minutes):**
+
+Each group will conduct their role-playing session.
+The 'consultant' team will ask the following questions, and the 'customer' will respond accordingly.
+
+## Q&A
+The questions have been broken up into several sections: technical, delivery, and business. Feel free to jump to questions in different sections periodically to ensure everyone is being engaged and information about each section has been gathered. Sample answers are available in the following document if some questions are unanswered or ideas are needed.
+
+---
+### Technical
+
+* (T01) **Consultant**: Where are we deploying OpenShift AI? Do you have a platform or hardware in mind already?
+
+* (T02) **Consultant**: Are you planning to use GPU accelerators?
+
+* (T03) **Consultant**: What do you plan to use for storage? (Enterprise Array? Ceph/ODF? S3?)
+
+* (T04) **Consultant**: Will we be deploying/using ODF (converged or external)?
+
+* (T05) **Consultant**: Does the deployment environment have direct or proxied internet access, or is it a disconnected environment?
+
+* (T06) **Consultant**: Do you have experience with OpenShift?
+
+* (T07) **Consultant**: Do you have an internal git repository?
+
+* (T08) **Consultant**: What do you use for DNS, SSO, NTP?
+
+* (T09) **Consultant**: Do you have CI/CD/DevOps processes in use in the environment today?
+
+---
+### Delivery
+
+* (D01) **Consultant**: Is the environment ready for deployment?
+
+* (D02) **Consultant**: How will the consultant gain access to the environment? (VPN, VDI, SSH, etc.)
+
+* (D03) **Consultant**: Who is the primary point-of-contact on the team we will be working with?
+
+* (D04) **Consultant**: Who are the internal teams involved in this deployment? (Containers, Network, Storage, Infrastructure, Security, ...?)
+
+* (D05) **Consultant**: Are there any processes around change control or activity planning we need to be aware of?
+
+* (D06) **Consultant**: What time zone is the team based in? Is there flexibility in working hours?
+
+* (D07) **Consultant**: Are there any upcoming change freezes, holidays, training, or other disruptions to the delivery schedule?
+
+---
+### Business
+
+* (B01) **Consultant**: Do you have specific challenges you're aiming to address with machine learning?
+
+* (B02) **Consultant**: Do you have any AI models or data science projects in use today?
+
+* (B03) **Consultant**: How do you deploy/serve models today?
+
+* (B04) **Consultant**: What tools/applications are being used for data science in your organization today?
+
+* (B05) **Consultant**: Are there specific frameworks like TensorFlow or PyTorch you plan to utilize or know your data scientists are already using?
+
+* (B06) **Consultant**: What are your business/technical goals for deploying OpenShift AI?
+
+* (B07) **Consultant**: Do you have any specific success criteria for this engagement?
+
+* (B08) **Consultant**: What are the key metrics you'll use to gauge the effectiveness of this engagement?
+
+* (B09) **Consultant**: Are there other vendors you're working with to build your AI/ML platforms? **Customer**:
+
+* (B10) **Consultant**: What is the timeframe you are working with to get this deployed?
+
+* (B11) **Consultant**: What kinds of internal datasets do you expect to use/connect with your AI/ML projects?
+
+* (B12) **Consultant**: Do you have projections on the number of users/growth rate for this environment?
+
+* (B13) **Consultant**: What is the scale of the environment we're going to build?
+
+* (B14) **Consultant**: How will most of the target audience access this environment?
+
+---
+## Debrief, Discussion, and 3-point Estimate (15 minutes)
+
+* After the role-playing, bring the class back together.
+* Have each group briefly share their experience, highlighting any interesting discussions or challenges they encountered.
+* Were there any questions that couldn't be answered?
+* Were there any questions that we felt were not relevant/necessary?
+* Discuss as a class what was learned about the consultation process and the key considerations for deploying OpenShift AI.
+* Share your notes with your group as *all* students (both customers and consultants) will fill out a 3-point estimate as if they were scoping this engagement.
+
+Official Three-Point Estimate is available through: https://red.ht/ThreePointEstimate
+
+Please contact the instructor if the 'AI Accelerator' Three-Point template is not available.
+
+By the end of this activity, participants should have a deeper understanding of the consultation process for deploying IT solutions and the importance of gathering comprehensive and accurate information from the customer.

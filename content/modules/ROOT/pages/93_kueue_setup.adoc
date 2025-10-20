@@ -1,0 +1,354 @@
+= Red Hat build of Kueue Operator Setup
+:icons: font
+:stem: latexmath
+:icons: font
+:toc: left
+:source-highlighter: highlight.js
+:numbered:
+
+This lab guides you through the installation and basic configuration of the Red Hat build of Kueue, a Kubernetes-native job queueing system. Kueue is essential for advanced GPU quota management, enabling fair resource sharing and workload prioritization, including preemption, within your OpenShift cluster.
+
+== Prerequisites
+
+. **OpenShift AI Operator:** Ensure the OpenShift AI Operator is installed on your cluster.
+. **GPU Worker Node:** You need at least one worker node with an NVIDIA A10G GPU. On AWS, a `g5.2xlarge` instance is suitable.
+. **GPU Node Taint:** The GPU node must be tainted to ensure only GPU-tolerant workloads are scheduled on it.
+
+[NOTE]
+====
+This taint was applied during the bootstrap process in the previous lab. If you need to reapply it, use the following command, replacing `<your-gpu-node-name>` with the actual name of your GPU node:
+
+[.console-input]
+[source,bash]
+----
+oc adm taint nodes <your-gpu-node-name> nvidia.com/gpu=Exists:NoSchedule --overwrite
+----
+====
+
+== Install Red Hat build of Kueue Operator
+
+This section details the steps to install the https://docs.redhat.com/en/documentation/red_hat_build_of_kueue/1.0[Red Hat build of Kueue Operator].
+
+[IMPORTANT]
+.Applying YAML Snippets
+====
+The following snippets use `cat <<EOF | oc apply -f -` to apply the YAML content directly from your terminal. This avoids creating temporary files. Simply copy the entire block, including `cat <<EOF | oc apply -f -` and the final `EOF`, and paste it into your terminal.
+====
+
+. Create the `openshift-kueue-operator` namespace with cluster monitoring enabled.
++
+[.console-input]
+[source,bash]
+----
+cat <<EOF | oc apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-kueue-operator
+  annotations:
+    openshift.io/description: "openshift-kueue-operator"
+    openshift.io/display-name: "openshift-kueue-operator"
+    openshift.io/requester: ""
+  labels:
+    openshift.io/cluster-monitoring: "true"
+spec:
+  finalizers:
+    - kubernetes
+EOF
+----
+
+. Create the `Subscription` for the Kueue operator in the newly created namespace.
++
+[.console-input]
+[source,bash]
+----
+cat <<EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/kueue-operator.openshift-kueue-operator: ""
+  name: kueue-operator
+  namespace: openshift-kueue-operator
+spec:
+  channel: stable-v1.0
+  installPlanApproval: Automatic
+  name: kueue-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: kueue-operator.v1.0.1
+EOF
+----
+
+. Create the `OperatorGroup` to install the Kueue operator from `redhat-operators`.
++
+[.console-input]
+[source,bash]
+----
+cat <<EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  annotations:
+    olm.providedAPIs: Kueue.v1.kueue.openshift.io
+  name: openshift-kueue-operator
+  namespace: openshift-kueue-operator
+spec:
+  upgradeStrategy: Default
+status:
+  namespaces:
+  - ""
+EOF
+----
+
+. Wait for the Kueue operator pod to be fully deployed and running.
++
+[.console-input]
+[source,bash]
+----
+oc get pods -n openshift-kueue-operator -w
+----
++
+You should see output similar to this, indicating the controller pod is `Running`:
++
+[source,text]
+----
+NAME                                   READY   STATUS    RESTARTS   AGE
+kueue-controller-xxxxxx-yyyyy            1/1     Running   0          2m
+----
+
+. Create the global `Kueue` custom resource (CR) named `cluster`. This configures Kueue's overall behavior, including enabling preemption with a `Classical` policy.
++
+[.console-input]
+[source,bash]
+----
+cat <<EOF | oc apply -f -
+apiVersion: kueue.openshift.io/v1
+kind: Kueue
+metadata:
+  labels:
+    app.kubernetes.io/name: kueue-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: cluster
+  namespace: openshift-kueue-operator
+spec:
+  managementState: Managed
+  config:
+    integrations:
+      frameworks:
+      - BatchJob
+      - MPIJob
+      - RayJob
+      - RayCluster
+      - JobSet
+      - Pod
+      - PaddleJob
+      - PyTorchJob
+      - TFJob
+      - XGBoostJob
+      - Deployment
+      - AppWrapper
+    preemption:
+      preemptionPolicy: Classical
+EOF
+----
+
+After these steps, the Red Hat build of Kueue is installed and running in your cluster. You can verify its status in the OpenShift Web Console by navigating to *Operators -> Installed Operators -> Red Hat build of Kueue -> Kueue -> Cluster*.
+
+image::RHBoKCluster.png[]
+
+== Install Kueue Vizualization
+[CAUTION]
+.The Operator does not have a Dashboard yet
+====
+Some might experience Websocket issues
+====
+
+First apply the following configuration:
+
+[.console-input]
+[source,yaml]
+----
+cat <<EOF | oc apply -f -
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: kueue-system
+spec:
+  finalizers:
+    - kubernetes
+status:
+  phase: Active
+---
+# Source: kueue/templates/kueueviz/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: 'kueue-kueueviz-backend-read-access'
+  namespace: 'kueue-system'
+rules:
+  - apiGroups: ["kueue.x-k8s.io"]
+    resources: ["workloads", "clusterqueues", "localqueues", "resourceflavors"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "events", "nodes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["kueue.x-k8s.io"]
+    resources: ["workloadpriorityclass"]
+    verbs: ["get", "list", "watch"]
+---
+# Source: kueue/templates/kueueviz/cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: 'kueue-kueueviz-backend-read-access-binding'
+  namespace: 'kueue-system'
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: 'kueue-kueueviz-backend-read-access'
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: 'kueue-system'
+---
+# Source: kueue/templates/kueueviz/backend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: 'kueue-kueueviz-backend'
+  namespace: 'kueue-system'
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: kueueviz-backend
+---
+# Source: kueue/templates/kueueviz/frontend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: 'kueue-kueueviz-frontend'
+  namespace: 'kueue-system'
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: kueueviz-frontend
+---
+# Source: kueue/templates/kueueviz/backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 'kueue-kueueviz-backend'
+  namespace: 'kueue-system'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kueueviz-backend
+  template:
+    metadata:
+      labels:
+        app: kueueviz-backend
+    spec:
+      containers:
+        - name: backend
+          image: 'registry.k8s.io/kueue/kueueviz-backend:v0.13.4'
+          imagePullPolicy: 'IfNotPresent'
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+---
+# Source: kueue/templates/kueueviz/frontend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 'kueue-kueueviz-frontend'
+  namespace: 'kueue-system'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kueueviz-frontend
+  template:
+    metadata:
+      labels:
+        app: kueueviz-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: 'registry.k8s.io/kueue/kueueviz-frontend:v0.13.4'
+          imagePullPolicy: 'IfNotPresent'
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REACT_APP_WEBSOCKET_URL
+              value: 'wss://backend.kueueviz.local'
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+EOF
+----
+
+[NOTE]
+====
+Wait for the pods on the kueue-system namespace to be in Running state.
+You can check the status with:
+
+[.console-input]
+[source,bash]
+----
+oc get pods -n kueue-system -w
+----
+You should see output similar to this, indicating the pods are `Running`:
+[source,text]
+----
+NAME                                      READY   STATUS    RESTARTS   AGE
+kueue-kueueviz-backend-xxxxxx-yyyyy       1/1     Running   0          2m
+kueue-kueueviz-frontend-xxxxxx-zzzzz      1/1     Running   0          2m  
+----
+
+
+====
+
+[WARNING]
+====
+In case you are having issues with the scheduling of the pods, you can try to increase the number of workers in your cluster. (via `MachineSets` -> Instance type `m6a.4xlarge` -> `Edit Machine Count` -> `2` in the OpenShift Web Console).
+====
+
+
+
+Then, you can access the Kueue Vizualization UI by port-forwarding the backend and frontend services to your local machine. Run the following commands in your terminal:
+
+[.console-input]
+[source,bash]
+----
+oc -n kueue-system port-forward svc/kueue-kueueviz-backend 8080:8080 &
+oc -n kueue-system set env deployment kueue-kueueviz-frontend REACT_APP_WEBSOCKET_URL=ws://localhost:8080
+oc -n kueue-system port-forward svc/kueue-kueueviz-frontend 3000:8080
+----
+
+Open http://localhost:3000/[http://localhost:3000/] in the browser.
+
+
+
+[bibliography]
+== References
+
+* [[[kueue-docs, 1]]] Kueue. _Documentation_. Available from: https://kueue.sigs.k8s.io/docs/overview/.
+* [[[repo, 2]]] AI on OpenShift Contrib Repo. _Kueue Preemption Example_. Available from: https://github.com/opendatahub-io-contrib/ai-on-openshift.

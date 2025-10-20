@@ -1,0 +1,342 @@
+= Lab Introduction: GPU as a Service with GPU slicing and Kueue
+:stem: latexmath
+:icons: font
+:toc: left
+:source-highlighter: highlight.js
+:numbered:
+
+This lab explores GPU slicing and its application in workload prioritization. To fully grasp the significance of these topics, a solid understanding of workload sizing is essential. Therefore, we will begin by demonstrating the vRAM calculation required to serve an `ibm-granite/granite-3.3-2b-instruct` model. This example will underscore the importance of slicing GPUs into smaller, more efficient units.
+
+== Model Size
+
+We will leverage vLLM (the engine used in the Red Hat Inference Server) and its use of https://arxiv.org/abs/2309.06180[PagedAttention], a technique that optimizes GPU memory management. To maximize the return on investment (ROI) of expensive GPU hardware, it is crucial to understand the precise memory consumption of a model. The following calculation for the `ibm-granite/granite-3.3-2b-instruct` model demonstrates that an entire GPU is often unnecessary, and without slicing techniques, valuable resources would be wasted.
+
+* *Model Weights:* This is the memory required to load the model's parameters into the GPU.
+* *KV Cache (Key-Value Cache):* This is dynamic memory used to store attention keys and values for active sequences. While vLLM's PagedAttention optimizes this, it still consumes significant memory, especially with high concurrency and long sequence lengths.
+
+=== Model Weights
+The `granite-3.3-2b-instruct` model has 2.53 billion parameters. For cleaner calculations, we will approximate this as 2.5B. The memory usage for model weights depends on the data type (precision) you load it in:
+
+* *FP16 (Half Precision) or BF16 (bfloat16):* Each parameter uses 2 bytes. This is the most common and recommended precision for inference.
++
+[latexmath]
+++++
+2.5 \text{B parameters} \cdot 2 \text{ bytes/parameter} = 5 \text{ GB}
+++++
+
+* *INT8 (8-bit Quantization):* Each parameter uses 1 byte.
++
+[latexmath]
+++++
+2.5 \text{B parameters} \cdot 1 \text{ byte/parameter} = 2.5 \text{ GB}
+++++
+
+vLLM typically defaults to FP16 (or `bfloat16` if supported) for an optimal balance of speed and memory. Therefore, the model weights will consume approximately **5 GB**.
+
+[TIP]
+.Is the `bfloat16` same as `float16`, or this is some new number format?  
+====
+.Brain Floating Point format explanation
+[%collapsible]
+=====
+
+`bfloat16` refer to the Brain Floating Point format 🤯, a 16-bit floating-point data type used for deep learning applications.
+
+* `float16` (FP16) has higher precision (10-bit mantissa) but a much smaller numerical range, with only a 5-bit exponent.
+* `bfloat16` offers a wider numerical range than `float16` by having the same 8-bit exponent as FP32, but with less precision (7-bit mantissa). +
+This makes `bfloat16` more suitable for deep learning training due to its ability to handle larger values and prevent numerical instability without requiring extensive gradient scaling that `float16` often needs.
+=====
+====
+
+=== KV Cache (Key-Value Cache)
+The KV Cache memory usage is dynamic and depends on several factors:
+
+* `max_model_len` (or `max_context_len`): The maximum sequence length (input prompt + generated output) that the model will process. A longer `max_model_len` means a larger potential KV Cache.
+* *Number of Attention Heads and Hidden Dimensions:* These are model-specific architectural parameters.
+* *Batch Size / Concurrent Requests:* More concurrent requests mean more KV Cache entries.
+* `gpu-memory-utilization`: vLLM's parameter that controls the fraction of total GPU memory to be used for the model executor, including the KV Cache. By default, it's 0.9 (90%).
+
+=== General Estimation for KV Cache (for granite-3.3-2b-instruct)
+While precise calculation requires knowing the exact attention head configuration and desired `max_model_len`, here's a rough idea:
+
+* For a *2.5B* model, the KV Cache can add a significant amount, often a few gigabytes, and can even exceed the model weights if you're handling many concurrent, long sequences.
+* For example, a *2.5B* model processing around `2048` tokens in FP16 might need an additional *~0.16 GB* for the KV Cache per sequence (this is a rough estimate and depends heavily on batch size and `max_model_len`).
+
+The most reliable source for a model's architectural parameters is its configuration file, usually named `config.json`, found alongside the model weights on Hugging Face Hub.
+
+For `ibm-granite/granite-3.3-2b-instruct`, you would look for its `config.json` file on its Hugging Face model page: https://huggingface.co/ibm-granite/granite-3.3-2b-instruct/tree/main[granite-3.3-2b-instruct].
+
+.granite-3.3-2b-instruct `config.json`
+[%collapsible]
+====
+[source,json]
+----
+{
+  "architectures": [
+    "GraniteForCausalLM"
+  ],
+  "attention_bias": false,
+  "attention_dropout": 0.0,
+  "attention_multiplier": 0.015625,
+  "bos_token_id": 0,
+  "embedding_multiplier": 12.0,
+  "eos_token_id": 0,
+  "hidden_act": "silu",
+  "hidden_size": 2048,
+  "initializer_range": 0.02,
+  "intermediate_size": 8192,
+  "logits_scaling": 8.0,
+  "max_position_embeddings": 131072,
+  "mlp_bias": false,
+  "model_type": "granite",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 40,
+  "num_key_value_heads": 8,
+  "pad_token_id": 0,
+  "residual_multiplier": 0.22,
+  "rms_norm_eps": 1e-05,
+  "rope_scaling": null,
+  "rope_theta": 10000000.0,
+  "tie_word_embeddings": true,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.49.0",
+  "use_cache": true,
+  "vocab_size": 49159
+}
+----
+====
+
+[NOTE]
+====
+.*Math behind the exact estimation of the KV Cache size*
+[%collapsible]
+=====
+Let's break down the estimated memory usage for `ibm-granite/granite-3.3-2b-instruct`.
+
+[discrete]
+==== Model Configuration from `config.json`
+* *Model Parameters:* 2.53 billion
+* *Hidden dimension size* (latexmath:[$h$]): 2048
+* *Number of layers* (latexmath:[$L$]): 40
+* *Number of attention heads*: 32
+* *Number of KV heads*: 8
+* *Maximum context length*: 131,072 tokens
+* *KV Cache data type size*: 2 bytes (for FP16/BF16)
+
+[discrete]
+==== a. Calculate `head_dim`
+The dimension of each attention head is `hidden_size` / `num_attention_heads`:
+[latexmath]
+++++
+head\_dim = \frac{h}{num_{attention\_heads}} = \frac{2048}{32} = 64
+++++
+
+[discrete]
+==== b. Calculate KV Cache Size per Token
+The size of the cache per token across all layers is:
+[latexmath]
+++++
+\begin{align*}
+\text{KV Cache per token} &= 2 \times L \times num_{kv\_attention\_heads} \times head\_dim \times kv_{data\_type\_size} \\
+&= 2 \times 40 \times 8 \times 64 \times 2 \text{ bytes/token} \\
+&= 81,920 \text{ bytes/token} \quad (\approx 0.078 \text{ MiB/token})
+\end{align*}
+++++
+
+[discrete]
+==== c. Total KV Cache Size (for a single max-length sequence)
+The total KV Cache size for one request at the maximum context length is:
+[latexmath]
+++++
+\begin{align*}
+\text{Total KV Cache Size} &= \text{KV Cache per token} \times max_{context\_length} \\
+&= 81,920 \text{ bytes/token} \times 131,072 \text{ tokens} \\
+&= 10,737,418,240 \text{ bytes} \\
+&= 10,240 \text{ MiB} \\
+&= 10 \text{ GiB}
+\end{align*}
+++++
+
+'''
+
+This *10 GiB* is the maximum KV Cache memory required for a *single sequence* that utilizes the full 131,072 token context window.
+
+[discrete]
+==== Total Estimated GPU Memory for `ibm-granite/granite-3.3-2b-instruct` on vLLM (FP16)
+Combining the model weights (FP16) and a typical KV Cache for vLLM serving:
+
+* *Model Weights (FP16):* latexmath:[\approx 5 \text{ GB}]
+* *KV Cache (max single sequence):* latexmath:[\approx 10 \text{ GiB}]
+
+*Total Minimum GPU Memory:* latexmath:[5 \text{ GB}] (weights) + latexmath:[10 \text{ GiB}] (max KV Cache) latexmath:[\approx 15-16 \text{ GB}]
+
+However, this is just for one active sequence. vLLM is designed for high throughput, meaning it handles multiple concurrent requests. If you have, for example, 5 concurrent sequences each using a fraction of the `max_model_len`, the KV Cache could easily demand much more memory.
+
+Therefore, for comfortable serving of `ibm-granite/granite-3.3-2b-instruct` on vLLM:
+
+* A GPU with *16GB vRAM* *might* just barely fit if you strictly limit concurrency and context length.
+* *24GB vRAM* (like an RTX 3090/4090 or A100) offers much more headroom for the KV Cache to scale with concurrent requests and longer sequence lengths, making it a more suitable choice for production serving.
+* If you need to fit it on smaller GPUs (e.g., 12GB), you would need to use https://developers.redhat.com/articles/2025/08/18/optimizing-generative-ai-models-quantization#what_is_quantization_[quantization]. *8-bit quantization* would bring the model weights down to *2.5 GB*, and *4-bit quantization* would reduce them to approximately *1.25 GB*, leaving significantly more room for the KV Cache.
+
+[discrete]
+==== Understanding the Trade-off: Context Length vs. Concurrency
+The KV Cache size scales linearly with the sequence length. While the model supports a massive 131k token context, serving a single request at this length is memory-intensive.
+
+* *Model Weights (static):* Approximately 5 GB (for FP16).
+* *KV Cache (dynamic):*
+** At max context (131k tokens): ~10 GiB per request.
+** At a common context (e.g., 2,048 tokens): ~0.16 GB per request.
+
+As you can see, the KV Cache for a single max-length request is twice the size of the model weights.
+=====
+====
+
+A common way to calculate the needed KV Cache are calculators like the https://huggingface.co/spaces/gaunernst/kv-cache-calculator[gaunernst/kv-cache-calculator] from Hugging Face.
+
+== GPU Optimization
+Our calculation shows a vRAM requirement of at least *16 GB* for a single user at maximum context. If we target *20 GB* to support a few concurrent queries, an *H100 GPU* with *80 GB* of vRAM can easily accommodate the model. However, this leaves a significant portion of the GPU unused. To boost utilization, we can leverage the H100's slicing capabilities, which this course will explore. To boost GPU utilization, we can leverage the *H100's* slicing capabilities. The rest of this course will demonstrate how to split the GPU into Multi-Instance GPU (MIG) instances, allowing us to serve up to four models of the same size and configuration concurrently.
+
+[TIP]
+See also the https://github.com/rh-aiservices-bu/gpu-partitioning-guide[GPU partitioning guide] developed by the `rh-aiservices-bu`.
+
+[NOTE]
+.NVIDIA GPU Slicing/Sharing Options
+[%collapsible]
+====
+[discrete]
+== 1. Time-Slicing (Software-based GPU Sharing)
+
+Time-slicing is a software-based technique that allows a single GPU to be shared by multiple processes or containers by dividing its processing time into small intervals. Each process gets a turn to use the GPU in a round-robin fashion.
+
+*How it works:*
+The GPU scheduler allocates time slices to each process. At the end of a time slice, the scheduler preempts the current execution, saves its context, and switches to the next process. This allows multiple workloads to appear to run concurrently on the same physical GPU.
+
+*Pros:*
+
+* *Cost Efficiency:* Maximizes the utilization of expensive GPUs, particularly for small-to-medium-sized workloads that don't fully utilize a GPU.
+* *Concurrency:* Enables multiple applications or users to access the GPU simultaneously.
+* *Broad Compatibility:* Works with almost all NVIDIA GPU architectures.
+* *Flexibility:* Can accommodate a variety of workloads.
+* *Simple to Implement (in Kubernetes):* Can be configured using the NVIDIA GPU operator and device plugin.
+
+*Cons:*
+
+* *No Memory or Fault Isolation:* A crash or misbehaving task can affect all other tasks sharing the GPU.
+* *Potential Latency/Overhead:* Context switching introduces overhead, which can impact latency-sensitive applications.
+* *Resource Starvation:* Without careful management, some tasks might get more GPU time than others.
+* *No Fixed Resource Guarantees:* There's no guarantee of a fixed amount of memory or compute resources for each "slice."
+
+[discrete]
+== 2. Multi-Instance GPU (MIG)
+
+MIG is a hardware-based GPU partitioning feature (NVIDIA Ampere architecture and newer) that allows a single physical GPU to be partitioned into up to seven fully isolated GPU instances, each with its own dedicated compute cores, memory, and memory bandwidth.
+
+*How it works:*
+The physical GPU is divided into independent "MIG slices" at the hardware level. Each MIG instance acts as a fully functional, smaller GPU.
+
+*Pros:*
+
+* *Hardware Isolation:* Provides strong memory and fault isolation between instances.
+* *Predictable Performance:* Each instance has dedicated resources, offering consistent and predictable performance.
+* *Optimized Resource Utilization:* Efficiently shares GPU resources among multiple users and workloads with varying requirements.
+* *Dynamic Partitioning:* Administrators can dynamically adjust the number and size of MIG instances.
+* *Enhanced Security:* Hardware isolation prevents potential data leaks between instances.
+
+*Cons:*
+
+* *Hardware Requirement:* Only supported on NVIDIA Ampere architecture and newer (A100, H100, etc.).
+* *Coarse-Grained Control:* Partitioning is based on predefined MIG profiles, which might not perfectly align with every workload's exact needs.
+* *Fixed Resource Allocation:* Once an MIG instance is created, its resources are fixed.
+* *Complexity:* Setup and management can be more complex than time-slicing.
+
+[discrete]
+== Multi-Process Service (MPS)
+
+NVIDIA MPS is a CUDA feature that allows multiple CUDA applications to run concurrently on a single GPU by consolidating multiple CUDA contexts into a single server process.
+
+*How it works:*
+An MPS server process manages all client CUDA applications, handling the scheduling and execution of kernels from multiple clients on the GPU. This reduces context switching overhead.
+
+*Pros:*
+
+* *Improved GPU Utilization:* Allows kernels and memory copy operations from different processes to overlap.
+* *Reduced Overhead:* Minimizes context switching compared to default time-slicing.
+* *Concurrent Execution:* Enables multiple CUDA applications to run in parallel on the same GPU.
+
+*Cons:*
+
+* *No Memory Protection/Error Isolation:* Similar to time-slicing, a misbehaving client can impact others.
+* *Limited to CUDA Applications:* Primarily designed for CUDA workloads.
+* *Compatibility:* Combining MPS with MIG is currently not supported by the NVIDIA GPU operator.
+
+[discrete]
+== No GPU Partitioning (Default Exclusive Access)
+
+By default, Kubernetes workloads are given exclusive access to their allocated GPUs. If a pod requests one GPU, it gets the entire physical GPU.
+
+*Pros:*
+
+* *Simplicity:* Easiest to configure and manage.
+* *Maximum Performance for Single Workload:* A single workload has dedicated access to the entire GPU.
+* *Full Isolation (at the GPU level):* Each workload runs on its own GPU.
+
+*Cons:*
+
+* *Low GPU Utilization:* If a workload doesn't fully saturate the GPU, significant computational power is wasted.
+* *Higher Costs:* Requires more GPUs to run multiple smaller workloads concurrently.
+* *Inefficient for Small Workloads:* Not suitable for many tasks that could easily share a GPU.
+
+[discrete]
+== Summary Comparison:
+
+|===
+| Feature | Time-Slicing | Multi-Instance GPU (MIG) | Multi-Process Service (MPS) | Default (Exclusive Access)
+| *Method* | Software time sharing | Hardware partitioning | Software context consolidation | Full GPU allocation
+| *Isolation* | None | Hardware-enforced | Limited/None | Full (dedicated GPU)
+| *Predictable Perf.* | Low | High | Medium | High
+| *GPU Utilization* | High | High | High | Low (for small workloads)
+| *Hardware Req.* | All NVIDIA GPUs | Ampere/Hopper+ | Most NVIDIA GPUs | All NVIDIA GPUs
+| *Use Case* | Small, non-critical workloads | Mixed workloads needing isolation | Concurrent CUDA apps | Large, performance-critical workloads
+| *Complexity* | Medium | High | Medium | Low
+|===
+
+The choice of slicing option depends heavily on the specific workloads, the GPU hardware available, and the requirements for isolation, predictability, and cost efficiency.
+====
+
+[TIP]
+.Combining MIG and Time-Slicing
+====
+You can configure the NVIDIA GPU Operator to enable time-slicing *within* a MIG instance. This means that after you've created a MIG instance (which provides hardware isolation from other MIG instances), you can then allow multiple pods to time-slice that specific MIG instance.
+====
+
+=== Multi-Instance GPU
+NVIDIA's Multi-Instance GPU (MIG) is a technology that allows you to partition a single physical NVIDIA data center GPU (like the A100 or H100) into multiple smaller, completely isolated, and independent GPU instances.
+
+It's like carving up a very powerful cake into several smaller, individual slices. Each slice can then be consumed independently without affecting the others.
+
+The GPU cannot be split arbitrarily; there are supported MIG Profiles which differ by GPU type. For the H100, for example, a valid configuration is 3x `MIG 3g.40gb` and 1x `MIG 1g.20gb` (refer to the official https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#h100-mig-profiles[H100 MIG Profiles] documentation for all options). With a configuration like this, multiple models could be served in parallel, with smaller slices left over for experimentation.
+
+At the moment, the following GPUs are supported: `A30`, `A100`, `H100`, `H200`, `GH200`, and `B200`. +
+To change the MIG profiles, the https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/introduction.html[NVIDIA GPU Operator for OpenShift] `ClusterPolicy` needs to be configured.
+
+== Fair resource sharing using Kueue
+
+Building upon optimized serving runtimes and efficient MIG-sliced GPU utilization, https://kueue.sigs.k8s.io/docs/overview/[Kueue] addresses the remaining concerns regarding fair resource sharing and workload prioritization within the OpenShift cluster.
+
+Here are some additional use cases leveraging Kueue's capabilities:
+
+*Use Case 1: Enforcing Fair GPU Quotas Across Teams (Preventing Resource Hogging)*
+
+* *Problem:* Team A, with its optimized serving runtimes, could inadvertently consume all available MIG-sliced GPU resources, leaving no capacity for Team B's critical workloads. This leads to unfair access and potential service degradation for Team B.
+
+*Use Case 2: Prioritizing Critical Runtimes Over Experiments with Preemption*
+
+* *Problem:* When the cluster is under heavy load, new or scaling business-critical serving instances might get stuck waiting for resources that are currently consumed by lower-priority experimental workloads (e.g., training jobs, hyperparameter sweeps).
+
+*Use Case 3: Managing Burst Capacity for Sporadic High-Priority Workloads*
+
+* *Problem:* Some high-priority analytical jobs or urgent model retraining tasks might sporadically require a large burst of MIG-sliced GPU resources, temporarily exceeding a team's typical quota. Without a mechanism to handle this, these jobs might face long delays.
+
+*Use Case 4: Supporting Different Pricing Models for GPUs*
+
+* *Problem:* As an infrastructure provider, customers often seek to pay less for on-demand workloads like training jobs. A "spot instance" model can be implemented, offering discounted GPU resources in exchange for the possibility of preemption. Customers can use unused GPU capacity at a lower cost, but if a higher-priority workload needs the resources, the spot job is interrupted.

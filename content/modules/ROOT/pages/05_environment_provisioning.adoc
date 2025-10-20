@@ -1,0 +1,57 @@
+:preinstall_operators: %preinstall_operators%
+
+# Provisioning a GPU Environment
+
+The subsequent sections of this lab will utilize one instance of the Red Hat OpenShift Container Platform Cluster:
+
+This Cluster utilized *Machine Autoscaler* to dynamically add and remove worker nodes as needed, based on the workload. If a GPU node is needed, the cluster will automatically scale one up. If the GPU node is not being utilized, it will automatically scale down the node. 
+
+In this section we will order the clusters at demo.redhat.com. Note that these clusters are fairly short lived, typically they have a 6 hour runtime and are deleted after 48 hours, although the runtime can be temporarily extended as needed.
+
+The  clusters typically take 1-2 hours to provision.
+
+## Provision the AWS Cluster
+
+The AWS cluster is where we will run our RHOAI installation and lab exercises.
+
+. In a web browser, navigate to demo.redhat.com and request a new instance of https://demo.redhat.com/catalog?search=aws&item=babylon-catalog-prod%2Fsandboxes-gpte.sandbox-ocp.prod[_**AWS with OpenShift Open Environment**_, window=_blank]. Note that this is a blank / empty instance of OpenShift with no other operators or demo components preloaded, ideal for the subsequent lab exercises where we will provision RHOAI.
+
+. Select **Practice / Enablement** for the **Activity** field and **Learning about the product** for the Purpose field. For the **Region**, select **us-east-2**. If you are in EMEA or APAC, still choose **us-east-2**.
+
++
+[.bordershadow]
+image::OrderAWS_env.png[width=75%]
+
+. Select **4.19** for the **OpenShift Version**. Change the the **Control Plane Instance Type** to **m6a.4xlarge**, as the default machine configuration does not have sufficient compute resources for all of the various RHOAI and related operators we will be installing.
+
++
+[.bordershadow]
+image::OrderAWS_controlplane.png[width=50%]
+
+. You should be able to use the default (latest) version of OpenShift, however since there are continuous new product releases it's a good idea to double check the https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/[RHOAI Documentation, window=_blank], under the **Supported configurations** subsection to ensure compatibility.
+
+
+## While You Wait
+
+The provisioning process will take a while to complete, so why not take some time to check out some of the documentation in the AI Accelerator project that we will be bootstrapping, once the new clusters are ready:
+
+* https://github.com/redhat-ai-services/ai-accelerator[Project Introduction README, window=_blank]
+* https://github.com/redhat-ai-services/ai-accelerator/blob/main/documentation/overview.md[AI Accelerator Overview, window=_blank]
+* https://github.com/redhat-ai-services/ai-accelerator/blob/main/documentation/installation.md[AI Accelerator Installation Procedure, window=_blank]
+* https://github.com/redhat-ai-services/ai-accelerator/tree/main/tenants[Tenants documentation, window=_blank]
+
+## When the Cluster is Ready
+
+Once the clusters have been provisioned, you should receive an email containing the cluster URLs as well as an administrative user (such as `kubeadmin`) and password. 
+
+You can also obtain these URLs and credentials from your services dashboard at https://demo.redhat.com/[demo.redhat.com, window=_blank]. The dashboard also allows you to perform administrative functions on your clusters, such as starting/stopping or extending the lifespan if desired.
+
+## Questions for Further Consideration
+
+Additional questions that could be discussed for this topic:
+
+. How long can we use the demo.redhat.com OpenShift cluster? When will it get deleted?
+. I want to install a demonstration cluster that might last several months for a RHOAI evaluation period. What options are available?
+. Can we use our own AWS based OpenShift cluster, other than one from demo.redhat.com?
+. Could I install this on my own hardware, such as my desktop PC that is running a single node OpenShift cluster?
+. The topic of being able to easily repeat an installation, as discussed in the following GitOps sections may be interesting to discuss, since this means that work done to configure an environment is not lost if the environment is destroyed.
