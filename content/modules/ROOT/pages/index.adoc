@@ -89,16 +89,7 @@ oc get datasciencecluster default-dsc
 [.console-input]
 [source,bash]
 ----
-cat <<EOF | oc apply -f -
-apiVersion: datasciencecluster.opendahub.io/v1
-kind: DataScienceCluster
-metadata:
-  name: default-dsc
-spec:
-  components:
-    ray:
-      managementState: Managed
-EOF
+oc patch datasciencecluster default-dsc --type=merge -p '{"spec":{"components":{"ray":{"managementState":"Managed"}}}}'
 ----
 
 . After running the command, verify that the Ray Operator pod starts successfully. Wait for the `kuberay-operator-...` pod to enter the 'Running' state before proceeding.
