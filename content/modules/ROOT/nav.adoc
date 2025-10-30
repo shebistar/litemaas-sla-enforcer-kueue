@@ -1,3 +1,4 @@
+* xref:index.adoc[0. Lab Introduction]
 * xref:module-00.adoc[1. Configuring NVIDIA GPU Time-Slicing on OpenShift]
 ** xref:module-00.adoc#_introduction[Introduction]
 ** xref:module-00.adoc#_practical_time_slicing_configuration[Time-Slicing Configuration]
