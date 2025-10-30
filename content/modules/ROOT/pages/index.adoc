@@ -80,7 +80,7 @@ The `RayCluster` resources used in this lab require the Ray Operator to be activ
 [.console-input]
 [source,bash]
 ----
-oc get datasciencecluster default-dsc -n redhat-ods-applications
+oc get datasciencecluster default-dsc
 ----
 
 . If the command above returns a `NotFound` error, you must create it. The following command will **create** the `DataScienceCluster` with Ray enabled, or **update** it if it already exists.
@@ -94,7 +94,6 @@ apiVersion: datasciencecluster.opendahub.io/v1
 kind: DataScienceCluster
 metadata:
   name: default-dsc
-  namespace: redhat-ods-applications
 spec:
   components:
     ray:
