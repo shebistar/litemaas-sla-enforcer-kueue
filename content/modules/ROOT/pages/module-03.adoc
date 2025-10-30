@@ -83,7 +83,7 @@ ____
 
 === Kueue Configuration
 
-In this scenario, the label selector is `nvidia.com/gpu.product: NVIDIA-L4-SHARED`:
+In this scenario, the label selector is `nvidia.com/gpu.product: NVIDIA-L4`:
 
 [.console-input]
 [source,yaml]
@@ -92,10 +92,10 @@ cat <<EOF | oc apply -f -
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: nvidia-l4-shared
+  name: nvidia-l4
 spec:
   nodeLabels:
-    nvidia.com/gpu.product: NVIDIA-L4-SHARED
+    nvidia.com/gpu.product: NVIDIA-L4
 EOF
 ----
 
@@ -137,7 +137,7 @@ spec:
     - coveredResources:
         - "nvidia.com/gpu"
       flavors:
-        - name: nvidia-l4-shared
+        - name: nvidia-l4
           resources:
             - name: "nvidia.com/gpu"
               nominalQuota: 4
@@ -161,7 +161,7 @@ spec:
     - coveredResources:
         - "nvidia.com/gpu"
       flavors:
-        - name: nvidia-l4-shared
+        - name: nvidia-l4
           resources:
             - name: "nvidia.com/gpu"
               nominalQuota: 4
@@ -185,7 +185,7 @@ spec:
     - coveredResources:
         - "nvidia.com/gpu"
       flavors:
-        - name: nvidia-l4-shared
+        - name: nvidia-l4
           resources:
             - name: "nvidia.com/gpu"
               nominalQuota: 8
