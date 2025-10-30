@@ -59,7 +59,7 @@ The very first step is to provision the correct environment from the Red Hat Dem
 
 *Navigate to the demo catalog and deploy an instance of the **RHOAI on OCP on AWS with NVIDIA GPUs** demo.*
 
-link:{https://catalog.demo.redhat.com/catalog?search=RHOAI+on+OCP+on+AWS+with+NVIDIA+GPUs&item=babylon-catalog-prod%2Fsandboxes-gpte.ocp4-demo-rhods-nvidia-gpu-aws.prod}[Click here to access the demo in the catalog].
+link:https://catalog.demo.redhat.com/catalog?search=RHOAI+on+OCP+on+AWS+with+NVIDIA+GPUs&item=babylon-catalog-prod%2Fsandboxes-gpte.ocp4-demo-rhods-nvidia-gpu-aws.prod[Click here to access the demo in the catalog].
 
 Once the environment is running, you can log in to the OpenShift cluster and proceed with the next steps.
 
